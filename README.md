@@ -1,73 +1,174 @@
-# Welcome to your Lovable project
+# Virtual Programming Lab (VPL)
 
-## Project info
+A modern, web-based virtual programming laboratory designed for educational institutions. This platform provides an interactive environment for students to learn and practice programming while giving lecturers powerful tools to manage courses, create assignments, and track student progress.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Overview
 
-## How can I edit this code?
+Virtual Programming Lab enables students to write, compile, and execute code directly in their browser without any local setup. The platform supports multiple programming languages including Python, Java, and C++, making it an ideal solution for computer science education.
 
-There are several ways of editing your application.
+## Features
 
-**Use Lovable**
+- **Interactive Code Editor**: Browser-based IDE with syntax highlighting and auto-completion
+- **Multi-Language Support**: Python, Java, and C++ compilation and execution
+- **Student Dashboard**: Access courses, submit assignments, and track progress
+- **Lecturer Dashboard**: Create courses, manage assignments, and monitor student analytics
+- **Real-time Compilation**: Instant feedback on code execution
+- **Progress Analytics**: Comprehensive insights into student performance
+- **Responsive Design**: Works seamlessly across desktop and mobile devices
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## Tech Stack
 
-Changes made via Lovable will be committed automatically to this repo.
+This project is built with modern web technologies:
 
-**Use your preferred IDE**
+- **React 18.3** - UI library for building interactive user interfaces
+- **TypeScript** - Type-safe JavaScript
+- **Vite** - Next-generation frontend build tool
+- **Tailwind CSS** - Utility-first CSS framework
+- **shadcn/ui** - Re-usable component library
+- **React Router** - Client-side routing
+- **Recharts** - Data visualization for analytics
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Installation
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Prerequisites
 
-Follow these steps:
+- Node.js (v18 or higher)
+- npm or yarn package manager
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Setup Instructions
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+1. **Clone the repository**
+   ```bash
+   git clone <YOUR_GIT_URL>
+   cd HOD_VLAB
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Access the application**
+   
+   Open your browser and navigate to `http://localhost:8080`
+
+## Available Scripts
+
+- `npm run dev` - Start development server with hot reload
+- `npm run build` - Build for production
+- `npm run build:dev` - Build for development environment
+- `npm run preview` - Preview production build locally
+- `npm run lint` - Run ESLint for code quality checks
+- `npm test` - Run test suite
+- `npm run test:watch` - Run tests in watch mode
+
+## Project Structure
+
+```
+HOD_VLAB/
+├── public/          # Static assets
+├── src/
+│   ├── assets/      # Images and media files
+│   ├── components/  # Reusable UI components
+│   │   └── ui/      # shadcn/ui components
+│   ├── hooks/       # Custom React hooks
+│   ├── lib/         # Utility functions
+│   ├── pages/       # Application pages/routes
+│   ├── test/        # Test files
+│   ├── App.tsx      # Root component
+│   └── main.tsx     # Application entry point
+├── package.json     # Project dependencies
+└── vite.config.ts   # Vite configuration
 ```
 
-**Edit a file directly in GitHub**
+## Usage
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### For Students
 
-**Use GitHub Codespaces**
+1. Navigate to the Student Dashboard
+2. Browse available courses (Python, Java, C++)
+3. Access the Virtual Lab to write and execute code
+4. Submit assignments and track your progress
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### For Lecturers
 
-## What technologies are used for this project?
+1. Access the Lecturer Dashboard
+2. Create and manage programming courses
+3. Assign coding exercises to students
+4. Monitor student progress through analytics
+5. Review and grade submissions
 
-This project is built with:
+## Deployment
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Build for Production
 
-## How can I deploy this project?
+```bash
+npm run build
+```
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+The optimized production build will be generated in the `dist/` directory.
 
-## Can I connect a custom domain to my Lovable project?
+### Deploy to Hosting Platform
 
-Yes, you can!
+You can deploy the built application to any static hosting service:
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+- Vercel
+- Netlify
+- GitHub Pages
+- AWS S3 + CloudFront
+- Azure Static Web Apps
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## Configuration
+
+Configuration files are located in the root directory:
+
+- `vite.config.ts` - Vite build configuration
+- `tailwind.config.ts` - Tailwind CSS customization
+- `tsconfig.json` - TypeScript compiler options
+- `eslint.config.js` - ESLint rules
+
+## Contributing
+
+We welcome contributions to improve the Virtual Programming Lab!
+
+### How to Contribute
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+### Coding Standards
+
+- Follow TypeScript best practices
+- Use ESLint configuration for code style
+- Write meaningful commit messages
+- Add tests for new features
+- Update documentation as needed
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Support
+
+For questions, issues, or feature requests:
+
+- Open an issue on GitHub
+- Contact the development team
+- Check the documentation
+
+## Acknowledgments
+
+Built with modern web technologies and best practices to provide a seamless educational experience for programming students and instructors.
+
+---
+
+**Version**: 1.0.0  
+**Last Updated**: February 2026
