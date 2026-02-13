@@ -86,6 +86,41 @@ HOD_VLAB/
 └── vite.config.ts   # Vite configuration
 ```
 
+## MCP (Model Context Protocol) Configuration
+
+This project includes MCP server configurations for enhanced AI capabilities in VS Code with GitHub Copilot:
+
+### Configured MCP Servers
+
+1. **Context-7** - Semantic search and context management using Upstash Vector Database
+2. **Supabase** - Database integration and queries
+3. **Critical Thinking** - Enhanced reasoning capabilities using Upstash Redis
+
+### Setup Instructions
+
+1. **Copy the environment template**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Configure your credentials** in `.env`:
+   - Get Upstash credentials from [upstash.com](https://upstash.com/)
+   - Get Supabase credentials from [supabase.com](https://supabase.com/)
+
+3. **The MCP servers are configured** in [.vscode/mcp.json](.vscode/mcp.json)
+
+4. **Manage MCP servers** in VS Code:
+   - Open Extensions view (`Ctrl+Shift+X`)
+   - View MCP servers section
+   - Or run: `MCP: List Servers` from Command Palette
+
+### Using MCP Tools
+
+Once configured, the MCP servers provide specialized tools in GitHub Copilot's agent mode:
+- Semantic search across your codebase
+- Database scaffolding and queries
+- Enhanced problem-solving capabilities
+
 ## Usage
 
 ### For Students

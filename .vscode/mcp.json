@@ -1,0 +1,29 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schema/mcp-configuration.json",
+  "servers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context-7-mcp-server"],
+      "env": {
+        "UPSTASH_VECTOR_REST_URL": "${UPSTASH_VECTOR_REST_URL}",
+        "UPSTASH_VECTOR_REST_TOKEN": "${UPSTASH_VECTOR_REST_TOKEN}"
+      }
+    },
+    "supabase": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-supabase"],
+      "env": {
+        "SUPABASE_URL": "${SUPABASE_URL}",
+        "SUPABASE_KEY": "${SUPABASE_KEY}"
+      }
+    },
+    "critical-thinking": {
+      "command": "npx",
+      "args": ["-y", "@upstash/critical-thinking-mcp-server"],
+      "env": {
+        "UPSTASH_REDIS_REST_URL": "${UPSTASH_REDIS_REST_URL}",
+        "UPSTASH_REDIS_REST_TOKEN": "${UPSTASH_REDIS_REST_TOKEN}"
+      }
+    }
+  }
+}
