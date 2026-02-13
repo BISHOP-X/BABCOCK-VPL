@@ -19,11 +19,13 @@ const LandingPage = () => {
             <span className="font-bold text-xl tracking-tight">VPL.system</span>
           </div>
           <div className="flex items-center gap-8">
-            <Link to="/student" className="text-sm font-medium hover:text-primary transition-colors">Student View</Link>
-            <Link to="/lecturer" className="text-sm font-medium hover:text-primary transition-colors">Lecturer View</Link>
-            <Button variant="default" className="bg-primary text-black hover:bg-primary/90 font-semibold shadow-[0_0_20px_rgba(0,255,255,0.3)]">
-              Login Portal
-            </Button>
+            <Link to="/login" className="text-sm font-medium hover:text-primary transition-colors">Sign In</Link>
+            <Link to="/signup" className="text-sm font-medium hover:text-primary transition-colors">Sign Up</Link>
+            <Link to="/login">
+              <Button variant="default" className="bg-primary text-black hover:bg-primary/90 font-semibold shadow-[0_0_20px_rgba(0,255,255,0.3)]">
+                Login Portal
+              </Button>
+            </Link>
           </div>
         </div>
       </nav>
@@ -49,7 +51,7 @@ const LandingPage = () => {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
               </span>
-              v2.0 System Online
+              Beta — Now Live
             </div>
             
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight">
@@ -58,19 +60,19 @@ const LandingPage = () => {
             </h1>
             
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              A secure, high-performance environment where code meets evaluation. 
-              Real-time compilation, instant feedback, and deep analytics for modern universities.
+              Write, run, and submit code — all from your browser. 
+              Cloud-based compilation, instant output, and lecturer grading for Babcock University.
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-              <Link to="/student">
+              <Link to="/login">
                 <Button size="lg" className="h-14 px-8 text-lg bg-white text-black hover:bg-white/90 font-semibold">
-                  Enter Student Lab
+                  Get Started
                 </Button>
               </Link>
-              <Link to="/lecturer">
+              <Link to="/login">
                 <Button size="lg" variant="outline" className="h-14 px-8 text-lg glass-card border-white/10 hover:bg-white/10 hover:text-white">
-                  Lecturer Access
+                  Sign In
                 </Button>
               </Link>
             </div>
@@ -94,7 +96,7 @@ const LandingPage = () => {
               </div>
               <div className="p-6 relative">
                 <h3 className="text-2xl font-bold mb-2 text-white group-hover:text-primary transition-colors">Pro-Grade IDE</h3>
-                <p className="text-muted-foreground">Monaco-powered editor with full terminal access, intelligent autocomplete, and multi-language support.</p>
+                <p className="text-muted-foreground">Monaco-powered editor with syntax highlighting, autocomplete, and support for Python, Java, and C++.</p>
               </div>
             </div>
 
@@ -109,8 +111,8 @@ const LandingPage = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
               </div>
               <div className="p-6 relative">
-                <h3 className="text-2xl font-bold mb-2 text-white group-hover:text-primary transition-colors">Instant Execution</h3>
-                <p className="text-muted-foreground">Zero-latency compilation pipelines. Run Python, Java, and C++ code instantly in isolated secure containers.</p>
+                <h3 className="text-2xl font-bold mb-2 text-white group-hover:text-primary transition-colors">Cloud Compilation</h3>
+                <p className="text-muted-foreground">Run Python, Java, and C++ code instantly via cloud-based compilers. See output in real time, right in your browser.</p>
               </div>
             </div>
 
@@ -125,8 +127,8 @@ const LandingPage = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
               </div>
               <div className="p-6 relative">
-                <h3 className="text-2xl font-bold mb-2 text-white group-hover:text-primary transition-colors">Deep Analytics</h3>
-                <p className="text-muted-foreground">Comprehensive insights into student performance, code quality metrics, and automated plagiarism detection.</p>
+                <h3 className="text-2xl font-bold mb-2 text-white group-hover:text-primary transition-colors">Submission & Grading</h3>
+                <p className="text-muted-foreground">Students submit code per assignment. Lecturers review, grade, and leave feedback — all in one streamlined workflow.</p>
               </div>
             </div>
           </div>

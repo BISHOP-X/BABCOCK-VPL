@@ -1,0 +1,89 @@
+import type { User } from '@/types';
+
+export const mockStudents: User[] = [
+  {
+    id: 'stu-001',
+    email: 'alex.chen@babcock.edu.ng',
+    full_name: 'Alex Chen',
+    role: 'student',
+    matric_number: '20/0534',
+    department: 'Computer Science',
+    avatar_url: '',
+    created_at: '2025-09-01T08:00:00Z',
+  },
+  {
+    id: 'stu-002',
+    email: 'emma.wilson@babcock.edu.ng',
+    full_name: 'Emma Wilson',
+    role: 'student',
+    matric_number: '20/0123',
+    department: 'Computer Science',
+    avatar_url: '',
+    created_at: '2025-09-01T08:00:00Z',
+  },
+  {
+    id: 'stu-003',
+    email: 'liam.johnson@babcock.edu.ng',
+    full_name: 'Liam Johnson',
+    role: 'student',
+    matric_number: '20/0124',
+    department: 'Computer Science',
+    avatar_url: '',
+    created_at: '2025-09-01T08:00:00Z',
+  },
+  {
+    id: 'stu-004',
+    email: 'noah.brown@babcock.edu.ng',
+    full_name: 'Noah Brown',
+    role: 'student',
+    matric_number: '20/0125',
+    department: 'Software Engineering',
+    avatar_url: '',
+    created_at: '2025-09-01T08:00:00Z',
+  },
+  {
+    id: 'stu-005',
+    email: 'olivia.davis@babcock.edu.ng',
+    full_name: 'Olivia Davis',
+    role: 'student',
+    matric_number: '20/0126',
+    department: 'Computer Science',
+    avatar_url: '',
+    created_at: '2025-09-01T08:00:00Z',
+  },
+  {
+    id: 'stu-006',
+    email: 'william.miller@babcock.edu.ng',
+    full_name: 'William Miller',
+    role: 'student',
+    matric_number: '20/0127',
+    department: 'Information Technology',
+    avatar_url: '',
+    created_at: '2025-09-01T08:00:00Z',
+  },
+];
+
+export const mockLecturers: User[] = [
+  {
+    id: 'lec-001',
+    email: 'anderson@babcock.edu.ng',
+    full_name: 'Prof. James Anderson',
+    role: 'lecturer',
+    staff_id: 'STF-2019-042',
+    department: 'Computer Science',
+    avatar_url: '',
+    created_at: '2024-01-15T08:00:00Z',
+  },
+  {
+    id: 'lec-002',
+    email: 'okonkwo@babcock.edu.ng',
+    full_name: 'Dr. Chioma Okonkwo',
+    role: 'lecturer',
+    staff_id: 'STF-2020-018',
+    department: 'Software Engineering',
+    avatar_url: '',
+    created_at: '2024-03-20T08:00:00Z',
+  },
+];
+
+export const mockUsers: User[] = [...mockStudents, ...mockLecturers];
