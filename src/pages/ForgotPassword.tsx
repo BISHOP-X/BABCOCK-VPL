@@ -17,48 +17,48 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-vpl-dark flex items-center justify-center p-6">
+    <div className="h-dvh bg-vpl-dark flex flex-col items-center justify-center px-4 sm:px-6 overflow-hidden relative">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px]" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-primary/5 rounded-full blur-[120px]" />
       </div>
 
-      <div className="relative z-10 w-full max-w-md space-y-8">
+      <div className="relative z-10 w-full max-w-sm space-y-5">
         {/* Logo */}
-        <div className="text-center space-y-2">
+        <div className="text-center space-y-1">
           <Link to="/" className="inline-flex items-center gap-2">
-            <div className="w-10 h-10 rounded-lg bg-primary/20 border border-primary/50 flex items-center justify-center">
-              <span className="text-primary font-bold font-mono text-lg">{`>`}</span>
+            <div className="w-9 h-9 rounded-lg bg-primary/20 border border-primary/50 flex items-center justify-center">
+              <span className="text-primary font-bold font-mono">{`>`}</span>
             </div>
-            <span className="font-bold text-2xl tracking-tight text-white">VPL.system</span>
+            <span className="font-bold text-xl tracking-tight text-white">VPL.system</span>
           </Link>
-          <p className="text-muted-foreground">Reset your password</p>
+          <p className="text-sm text-muted-foreground">Reset your password</p>
         </div>
 
         {submitted ? (
-          <div className="glass-card rounded-2xl p-8 border border-white/10 text-center space-y-4">
-            <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <div className="glass-card rounded-2xl p-6 border border-white/10 text-center space-y-3">
+            <div className="w-14 h-14 mx-auto rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </div>
-            <h2 className="text-xl font-semibold text-white">Check your email</h2>
-            <p className="text-sm text-muted-foreground">
+            <h2 className="text-lg font-semibold text-white">Check your email</h2>
+            <p className="text-xs text-muted-foreground">
               If an account exists for <span className="text-primary">{email}</span>, you'll receive a password reset link shortly.
             </p>
             <Link to="/login">
-              <Button variant="outline" className="mt-4 border-white/10 hover:bg-white/10">
+              <Button variant="outline" className="mt-2 border-white/10 hover:bg-white/10 text-sm">
                 Back to Sign In
               </Button>
             </Link>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-8 space-y-6 border border-white/10">
-            <p className="text-sm text-muted-foreground">
+          <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-5 sm:p-7 space-y-4 border border-white/10">
+            <p className="text-xs text-muted-foreground">
               Enter your email address and we'll send you a link to reset your password.
             </p>
 
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="email" className="text-xs">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -66,18 +66,18 @@ const ForgotPassword = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="h-12 bg-white/5 border-white/10 focus:border-primary"
+                className="h-11 bg-white/5 border-white/10 focus:border-primary text-sm"
               />
             </div>
 
             <Button
               type="submit"
-              className="w-full h-12 bg-primary text-black font-semibold hover:bg-primary/90 shadow-[0_0_20px_rgba(0,255,255,0.3)]"
+              className="w-full h-11 bg-primary text-black font-semibold hover:bg-primary/90 shadow-[0_0_20px_rgba(0,255,255,0.3)]"
             >
               Send Reset Link
             </Button>
 
-            <p className="text-center text-sm text-muted-foreground">
+            <p className="text-center text-xs text-muted-foreground">
               Remember your password?{' '}
               <Link to="/login" className="text-primary hover:underline font-medium">
                 Sign in

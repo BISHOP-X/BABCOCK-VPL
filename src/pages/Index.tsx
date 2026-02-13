@@ -18,12 +18,15 @@ const LandingPage = () => {
             </div>
             <span className="font-bold text-xl tracking-tight">VPL.system</span>
           </div>
-          <div className="flex items-center gap-8">
-            <Link to="/login" className="text-sm font-medium hover:text-primary transition-colors">Sign In</Link>
-            <Link to="/signup" className="text-sm font-medium hover:text-primary transition-colors">Sign Up</Link>
+          <div className="flex items-center gap-3 sm:gap-4">
             <Link to="/login">
-              <Button variant="default" className="bg-primary text-black hover:bg-primary/90 font-semibold shadow-[0_0_20px_rgba(0,255,255,0.3)]">
-                Login Portal
+              <Button variant="ghost" className="text-sm font-medium text-muted-foreground hover:text-white hover:bg-white/10 hidden sm:inline-flex">
+                Sign In
+              </Button>
+            </Link>
+            <Link to="/signup">
+              <Button variant="default" className="bg-primary text-black hover:bg-primary/90 font-semibold shadow-[0_0_20px_rgba(0,255,255,0.3)] text-sm px-5 h-10">
+                Get Started
               </Button>
             </Link>
           </div>
@@ -54,24 +57,24 @@ const LandingPage = () => {
               Beta — Now Live
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight leading-tight">
               The Next Evolution of <br />
               <span className="text-gradient-primary">Computer Science Education</span>
             </h1>
             
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed px-2">
               Write, run, and submit code — all from your browser. 
               Cloud-based compilation, instant output, and lecturer grading for Babcock University.
             </p>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-              <Link to="/login">
-                <Button size="lg" className="h-14 px-8 text-lg bg-white text-black hover:bg-white/90 font-semibold">
-                  Get Started
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-4">
+              <Link to="/signup">
+                <Button size="lg" className="h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg bg-white text-black hover:bg-white/90 font-semibold w-full sm:w-auto">
+                  Create Account
                 </Button>
               </Link>
               <Link to="/login">
-                <Button size="lg" variant="outline" className="h-14 px-8 text-lg glass-card border-white/10 hover:bg-white/10 hover:text-white">
+                <Button size="lg" variant="outline" className="h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg glass-card border-white/10 hover:bg-white/10 hover:text-white w-full sm:w-auto">
                   Sign In
                 </Button>
               </Link>

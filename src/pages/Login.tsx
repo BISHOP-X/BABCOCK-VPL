@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,51 +8,49 @@ import { toast } from 'sonner';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login, isLoading } = useAuth();
+  const { login, isLoading, isAuthenticated, user } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      navigate(user.role === 'lecturer' ? '/lecturer' : '/student', { replace: true });
+    }
+  }, [isAuthenticated, user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await login({ email, password });
       toast.success('Welcome back!');
-      // redirect handled in useEffect below via auth state
     } catch {
       toast.error('Invalid email or password');
     }
   };
 
-  // Redirect once authenticated
-  const { isAuthenticated, user } = useAuth();
-  if (isAuthenticated && user) {
-    const dest = user.role === 'lecturer' ? '/lecturer' : '/student';
-    navigate(dest, { replace: true });
-  }
-
   return (
-    <div className="min-h-screen bg-vpl-dark flex items-center justify-center p-6">
+    <div className="h-dvh bg-vpl-dark flex flex-col items-center justify-center px-4 sm:px-6 overflow-hidden relative">
       {/* Background glow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px]" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-primary/5 rounded-full blur-[120px]" />
       </div>
 
-      <div className="relative z-10 w-full max-w-md space-y-8">
+      <div className="relative z-10 w-full max-w-sm space-y-5 sm:space-y-6">
         {/* Logo */}
-        <div className="text-center space-y-2">
+        <div className="text-center space-y-1">
           <Link to="/" className="inline-flex items-center gap-2">
-            <div className="w-10 h-10 rounded-lg bg-primary/20 border border-primary/50 flex items-center justify-center">
-              <span className="text-primary font-bold font-mono text-lg">{`>`}</span>
+            <div className="w-9 h-9 rounded-lg bg-primary/20 border border-primary/50 flex items-center justify-center">
+              <span className="text-primary font-bold font-mono">{`>`}</span>
             </div>
-            <span className="font-bold text-2xl tracking-tight text-white">VPL.system</span>
+            <span className="font-bold text-xl tracking-tight text-white">VPL.system</span>
           </Link>
-          <p className="text-muted-foreground">Sign in to your account</p>
+          <p className="text-sm text-muted-foreground">Sign in to your account</p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-8 space-y-6 border border-white/10">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+        <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-5 sm:p-7 space-y-4 border border-white/10">
+          <div className="space-y-1.5">
+            <Label htmlFor="email" className="text-xs">Email</Label>
             <Input
               id="email"
               type="email"
@@ -60,14 +58,14 @@ const Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="h-12 bg-white/5 border-white/10 focus:border-primary"
+              className="h-11 bg-white/5 border-white/10 focus:border-primary text-sm"
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
-              <Link to="/forgot-password" className="text-xs text-primary hover:underline">
+              <Label htmlFor="password" className="text-xs">Password</Label>
+              <Link to="/forgot-password" className="text-[11px] text-primary hover:underline">
                 Forgot password?
               </Link>
             </div>
@@ -78,28 +76,28 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="h-12 bg-white/5 border-white/10 focus:border-primary"
+              className="h-11 bg-white/5 border-white/10 focus:border-primary text-sm"
             />
           </div>
 
           {/* Quick-login hint */}
-          <div className="rounded-lg bg-primary/5 border border-primary/20 p-3 text-xs text-muted-foreground font-mono">
-            <p className="text-primary font-semibold mb-1">Demo accounts:</p>
+          <div className="rounded-lg bg-primary/5 border border-primary/20 px-3 py-2 text-[11px] text-muted-foreground font-mono leading-relaxed">
+            <p className="text-primary font-semibold mb-0.5">Demo accounts:</p>
             <p>Student: alex.chen@babcock.edu.ng</p>
             <p>Lecturer: anderson@babcock.edu.ng</p>
-            <p className="mt-1 text-[10px]">Any password works in demo mode</p>
+            <p className="mt-0.5 text-[10px] opacity-70">Any password works in demo mode</p>
           </div>
 
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full h-12 bg-primary text-black font-semibold hover:bg-primary/90 shadow-[0_0_20px_rgba(0,255,255,0.3)]"
+            className="w-full h-11 bg-primary text-black font-semibold hover:bg-primary/90 shadow-[0_0_20px_rgba(0,255,255,0.3)]"
           >
             {isLoading ? 'Signing in…' : 'Sign In'}
           </Button>
         </form>
 
-        <p className="text-center text-sm text-muted-foreground">
+        <p className="text-center text-xs text-muted-foreground">
           Don't have an account?{' '}
           <Link to="/signup" className="text-primary hover:underline font-medium">
             Create account
