@@ -88,38 +88,36 @@ HOD_VLAB/
 
 ## MCP (Model Context Protocol) Configuration
 
-This project includes MCP server configurations for enhanced AI capabilities in VS Code with GitHub Copilot:
+This project includes MCP server configurations for enhanced AI capabilities in VS Code with GitHub Copilot.
 
 ### Configured MCP Servers
 
-1. **Context-7** - Semantic search and context management using Upstash Vector Database
-2. **Supabase** - Database integration and queries
-3. **Critical Thinking** - Enhanced reasoning capabilities using Upstash Redis
+1. **Supabase** - Database queries, migrations, TypeScript types, Edge Functions, and logs
+2. **Context7** - Live documentation for React, TypeScript, and Tailwind CSS (prevents outdated suggestions)
+3. **Sequential Thinking** - Enhanced multi-step reasoning for complex programming tasks
 
 ### Setup Instructions
 
-1. **Copy the environment template**
-   ```bash
-   cp .env.example .env
-   ```
+1. **Open VS Code** in this workspace
 
-2. **Configure your credentials** in `.env`:
-   - Get Upstash credentials from [upstash.com](https://upstash.com/)
-   - Get Supabase credentials from [supabase.com](https://supabase.com/)
+2. **Open GitHub Copilot Chat** (`Ctrl+Shift+I`)
 
-3. **The MCP servers are configured** in [.vscode/mcp.json](.vscode/mcp.json)
+3. **Activate MCP Servers**:
+   - Click "Start" above each server in the MCP configuration
+   - No environment variables or API keys needed!
 
-4. **Manage MCP servers** in VS Code:
-   - Open Extensions view (`Ctrl+Shift+X`)
-   - View MCP servers section
-   - Or run: `MCP: List Servers` from Command Palette
+4. **Manage MCP servers**:
+   - Run: `MCP: List Servers` from Command Palette (`Ctrl+Shift+P`)
+   - Or view in Extensions panel (`Ctrl+Shift+X`)
 
 ### Using MCP Tools
 
-Once configured, the MCP servers provide specialized tools in GitHub Copilot's agent mode:
-- Semantic search across your codebase
-- Database scaffolding and queries
-- Enhanced problem-solving capabilities
+Once activated, the MCP servers provide specialized tools in GitHub Copilot's agent mode:
+- **Supabase**: Query databases, run migrations, generate TypeScript types
+- **Context7**: Get up-to-date documentation for React, TypeScript, Tailwind
+- **Sequential Thinking**: Better problem decomposition and step-by-step reasoning
+
+The configuration is located in [.vscode/mcp.json](.vscode/mcp.json).
 
 ## Usage
 

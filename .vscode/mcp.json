@@ -1,29 +1,26 @@
 {
-  "$schema": "https://modelcontextprotocol.io/schema/mcp-configuration.json",
+  // MCP Servers for Virtual Programming Lab
+  // Use Ctrl+Shift+I to open Chat, click "Start" above each server to activate
+  
   "servers": {
-    "context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context-7-mcp-server"],
-      "env": {
-        "UPSTASH_VECTOR_REST_URL": "${UPSTASH_VECTOR_REST_URL}",
-        "UPSTASH_VECTOR_REST_TOKEN": "${UPSTASH_VECTOR_REST_TOKEN}"
-      }
-    },
+    // Supabase — DB queries, migrations, TypeScript types, Edge Functions, logs
     "supabase": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-supabase"],
-      "env": {
-        "SUPABASE_URL": "${SUPABASE_URL}",
-        "SUPABASE_KEY": "${SUPABASE_KEY}"
-      }
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp"
     },
-    "critical-thinking": {
+
+    // Context7 — Live docs for React, TypeScript, Tailwind (prevents outdated suggestions)
+    "context7": {
+      "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@upstash/critical-thinking-mcp-server"],
-      "env": {
-        "UPSTASH_REDIS_REST_URL": "${UPSTASH_REDIS_REST_URL}",
-        "UPSTASH_REDIS_REST_TOKEN": "${UPSTASH_REDIS_REST_TOKEN}"
-      }
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+
+    // Sequential Thinking — Better multi-step reasoning for complex tasks
+    "sequentialThinking": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     }
   }
 }
