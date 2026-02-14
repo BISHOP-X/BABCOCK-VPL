@@ -42,7 +42,7 @@ const Login = () => {
             <div className="w-9 h-9 rounded-lg bg-primary/20 border border-primary/50 flex items-center justify-center">
               <span className="text-primary font-bold font-mono">{`>`}</span>
             </div>
-            <span className="font-bold text-xl tracking-tight text-white">VPL.system</span>
+            <span className="font-bold text-xl tracking-tight text-white">BABCOCK VPL</span>
           </Link>
           <p className="text-sm text-muted-foreground">Sign in to your account</p>
         </div>
@@ -80,12 +80,11 @@ const Login = () => {
             />
           </div>
 
-          {/* Quick-login hint */}
+          {/* Demo hint */}
           <div className="rounded-lg bg-primary/5 border border-primary/20 px-3 py-2 text-[11px] text-muted-foreground font-mono leading-relaxed">
-            <p className="text-primary font-semibold mb-0.5">Demo accounts:</p>
-            <p>Student: alex.chen@babcock.edu.ng</p>
-            <p>Lecturer: anderson@babcock.edu.ng</p>
-            <p className="mt-0.5 text-[10px] opacity-70">Any password works in demo mode</p>
+            <p className="text-primary font-semibold mb-0.5">Demo Mode</p>
+            <p>Any email & password will work.</p>
+            <p className="mt-0.5 text-[10px] opacity-70">Include "lec" or "prof" in the email to sign in as a lecturer</p>
           </div>
 
           <Button

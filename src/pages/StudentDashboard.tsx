@@ -1,125 +1,165 @@
 
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { Progress } from "@/components/ui/progress";
-import studentBanner from "@/assets/student-banner.jpg";
-import coursePython from "@/assets/course-python.jpg";
-import courseJava from "@/assets/course-java.jpg";
-import courseCpp from "@/assets/course-cpp.jpg";
-import { Play, Clock, CheckCircle2, Terminal } from "lucide-react";
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import Navbar from '@/components/Navbar';
+import { useAuth } from '@/context/useAuth';
+import { getEnrollmentsForStudent, getAssignmentsWithStatus } from '@/services/mockApi';
+import type { EnrollmentWithCourse, AssignmentWithStatus } from '@/types';
+import { Progress } from '@/components/ui/progress';
+import { Terminal, Clock, BookOpen, CheckCircle2, AlertCircle, ChevronRight } from 'lucide-react';
+
+const langColor: Record<string, string> = {
+  python: 'from-yellow-500/20 to-yellow-700/10 border-yellow-500/30',
+  java: 'from-orange-500/20 to-orange-700/10 border-orange-500/30',
+  cpp: 'from-blue-500/20 to-blue-700/10 border-blue-500/30',
+};
+
+const langIcon: Record<string, string> = { python: 'PY', java: 'JV', cpp: 'C++' };
 
 const StudentDashboard = () => {
-  const courses = [
-    {
-      id: "cs101",
-      title: "Introduction to Python",
-      progress: 75,
-      image: coursePython,
-      nextAssignment: "Data Structures & Lists",
-      due: "2h remaining"
-    },
-    {
-      id: "cs202",
-      title: "Advanced Java Programming",
-      progress: 45,
-      image: courseJava,
-      nextAssignment: "Object Oriented Patterns",
-      due: "2 days remaining"
-    },
-    {
-      id: "cs303",
-      title: "System Programming in C++",
-      progress: 12,
-      image: courseCpp,
-      nextAssignment: "Memory Management",
-      due: "5 days remaining"
+  const { user } = useAuth();
+  const [enrollments, setEnrollments] = useState<EnrollmentWithCourse[]>([]);
+  const [courseAssignments, setCourseAssignments] = useState<Record<string, AssignmentWithStatus[]>>({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      if (!user) return;
+      const enr = await getEnrollmentsForStudent(user.id);
+      setEnrollments(enr);
+
+      // Load assignment statuses per course in parallel
+      const pairs = await Promise.all(
+        enr.map(async (e) => {
+          const asgns = await getAssignmentsWithStatus(e.course.id, user.id);
+          return [e.course.id, asgns] as const;
+        })
+      );
+      setCourseAssignments(Object.fromEntries(pairs));
+      setLoading(false);
     }
-  ];
+    load();
+  }, [user]);
+
+  const firstName = user?.full_name.split(' ')[0] ?? 'Student';
+
+  // Aggregate stats
+  const allAssignments = Object.values(courseAssignments).flat();
+  const totalPending = allAssignments.filter((a) => a.status === 'not_started' || a.status === 'in_progress').length;
+  const totalSubmitted = allAssignments.filter((a) => a.status === 'submitted' || a.status === 'graded').length;
 
   return (
     <div className="min-h-screen bg-vpl-dark text-foreground">
-      {/* Top Navigation */}
-      <nav className="border-b border-white/10 bg-vpl-card/50 backdrop-blur-md sticky top-0 z-40">
-        <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-primary/20 flex items-center justify-center text-primary font-bold">S</div>
-            <span className="font-bold">Student Portal</span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-muted-foreground">Logged in as <span className="text-white">Alex Chen</span></div>
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-primary to-blue-600 border border-white/20"></div>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
-      {/* Welcome Banner */}
-      <header className="relative h-64 overflow-hidden">
-        <div className="absolute inset-0">
-          <img src={studentBanner} alt="Student Dashboard" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-r from-vpl-dark via-vpl-dark/80 to-transparent" />
-        </div>
-        <div className="container relative z-10 px-6 h-full flex flex-col justify-center animate-fade-in">
-          <h1 className="text-4xl font-bold mb-2">Welcome back, Alex</h1>
-          <p className="text-xl text-muted-foreground max-w-xl">You have 3 pending assignments due this week. Your Python mastery has increased by 12%.</p>
+      {/* Welcome Header */}
+      <header className="border-b border-white/10 bg-vpl-card/30">
+        <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+          <h1 className="text-2xl sm:text-3xl font-bold">Welcome back, {firstName}</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            {totalPending > 0
+              ? `You have ${totalPending} pending assignment${totalPending > 1 ? 's' : ''}.`
+              : 'All caught up — no pending assignments!'}
+          </p>
+
+          {/* Quick stats */}
+          <div className="flex items-center gap-4 mt-4">
+            <div className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
+              <BookOpen className="w-3.5 h-3.5 text-primary" />
+              <span className="text-white font-medium">{enrollments.length}</span>
+              <span className="text-muted-foreground">Courses</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
+              <AlertCircle className="w-3.5 h-3.5 text-yellow-400" />
+              <span className="text-white font-medium">{totalPending}</span>
+              <span className="text-muted-foreground">Pending</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
+              <CheckCircle2 className="w-3.5 h-3.5 text-green-400" />
+              <span className="text-white font-medium">{totalSubmitted}</span>
+              <span className="text-muted-foreground">Submitted</span>
+            </div>
+          </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="container px-6 py-12">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <Terminal className="w-6 h-6 text-primary" />
-            Active Courses
-          </h2>
-          <Button variant="outline" className="border-white/10 hover:bg-white/5">View All Courses</Button>
-        </div>
+      {/* Courses Grid */}
+      <main className="container mx-auto px-4 sm:px-6 py-6">
+        <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4 flex items-center gap-2">
+          <Terminal className="w-4 h-4 text-primary" />
+          Active Courses
+        </h2>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {courses.map((course, index) => (
-            <Link 
-              key={course.id} 
-              to={`/lab/${course.id}`}
-              className="group relative rounded-xl overflow-hidden bg-vpl-card border border-white/10 hover:border-primary/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,0,0,0.5)] flex flex-col"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <div className="h-48 overflow-hidden relative">
-                <img 
-                  src={course.image} 
-                  alt={course.title} 
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="flex justify-between text-xs font-medium text-white/90 mb-1">
-                    <span>Progress</span>
-                    <span>{course.progress}%</span>
+        {loading ? (
+          <div className="flex items-center justify-center h-40">
+            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : enrollments.length === 0 ? (
+          <div className="text-center py-16 text-muted-foreground">
+            <BookOpen className="w-10 h-10 mx-auto mb-3 opacity-40" />
+            <p>No enrolled courses yet.</p>
+          </div>
+        ) : (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {enrollments.map((enrollment, idx) => {
+              const course = enrollment.course;
+              const asgns = courseAssignments[course.id] ?? [];
+              const completed = asgns.filter((a) => a.status === 'submitted' || a.status === 'graded').length;
+              const progress = asgns.length > 0 ? Math.round((completed / asgns.length) * 100) : 0;
+              const nextAssignment = asgns.find((a) => a.status === 'not_started' || a.status === 'in_progress');
+
+              return (
+                <Link
+                  key={course.id}
+                  to={`/student/courses/${course.id}`}
+                  className="group rounded-xl overflow-hidden bg-vpl-card border border-white/10 hover:border-primary/40 transition-all duration-300 hover:shadow-lg flex flex-col"
+                  style={{ animationDelay: `${idx * 80}ms` }}
+                >
+                  {/* Language header */}
+                  <div className={`h-24 bg-gradient-to-br ${langColor[course.language]} flex items-center justify-between px-5`}>
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-white/60">{course.code}</span>
+                      <h3 className="text-base sm:text-lg font-bold text-white mt-0.5 group-hover:text-primary transition-colors">
+                        {course.title}
+                      </h3>
+                    </div>
+                    <div className="w-10 h-10 rounded-lg bg-black/20 border border-white/10 flex items-center justify-center text-xs font-bold text-white/80">
+                      {langIcon[course.language] ?? course.language.toUpperCase().slice(0, 3)}
+                    </div>
                   </div>
-                  <Progress value={course.progress} className="h-1.5 bg-white/20" />
-                </div>
-              </div>
-              
-              <div className="p-5 flex-1 flex flex-col">
-                <h3 className="text-xl font-bold mb-1 group-hover:text-primary transition-colors">{course.title}</h3>
-                
-                <div className="mt-auto pt-4 space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-white/80 bg-white/5 p-2 rounded border border-white/5">
-                    <Play className="w-4 h-4 text-primary" />
-                    <span className="truncate">{course.nextAssignment}</span>
+
+                  {/* Body */}
+                  <div className="p-4 flex-1 flex flex-col">
+                    {/* Progress */}
+                    <div className="mb-3">
+                      <div className="flex justify-between text-[11px] text-muted-foreground mb-1">
+                        <span>Completion</span>
+                        <span className="text-white font-medium">{progress}%</span>
+                      </div>
+                      <Progress value={progress} className="h-1.5 bg-white/10" />
+                    </div>
+
+                    {/* Next assignment */}
+                    {nextAssignment && (
+                      <div className="flex items-center gap-2 text-xs bg-white/5 p-2 rounded-lg border border-white/5 mb-3">
+                        <Clock className="w-3.5 h-3.5 text-yellow-400 shrink-0" />
+                        <span className="truncate text-white/80">{nextAssignment.title}</span>
+                      </div>
+                    )}
+
+                    {/* Footer stats */}
+                    <div className="mt-auto flex items-center justify-between text-[11px] text-muted-foreground pt-2 border-t border-white/5">
+                      <span>{asgns.length} assignments</span>
+                      <span className="flex items-center gap-1 text-primary group-hover:translate-x-0.5 transition-transform">
+                        View Course <ChevronRight className="w-3 h-3" />
+                      </span>
+                    </div>
                   </div>
-                  
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" /> {course.due}
-                    </span>
-                    <span className="flex items-center gap-1 text-green-400">
-                      <CheckCircle2 className="w-3 h-3" /> Active
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
       </main>
     </div>
   );

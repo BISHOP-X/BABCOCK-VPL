@@ -1,55 +1,143 @@
 
 import { Button } from "@/components/ui/button";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Play, Save, Settings, ChevronLeft, Terminal as TerminalIcon } from "lucide-react";
-import { useState } from "react";
+import { Play, Send, ChevronLeft, Terminal as TerminalIcon, CheckCircle2, Loader2 } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import Editor from "@monaco-editor/react";
+import { useAuth } from "@/context/useAuth";
+import { getAssignmentById, getCourseById, submitCode as mockSubmit, getSubmissionByStudentAndAssignment } from "@/services/mockApi";
+import type { Assignment, CourseWithLecturer, Submission } from "@/types";
+import { toast } from "sonner";
+
+const langMap: Record<string, string> = { python: 'python', java: 'java', cpp: 'cpp' };
+
+const starterCode: Record<string, string> = {
+  python: '# Write your solution here\n\n',
+  java: 'public class Solution {\n    public static void main(String[] args) {\n        // Write your solution here\n    }\n}\n',
+  cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n    // Write your solution here\n    return 0;\n}\n',
+};
 
 const VirtualLab = () => {
-  const { courseId } = useParams();
-  const [output, setOutput] = useState([
-    "> Initializing virtual environment...",
-    "> Python 3.9.2 detected",
-    "> Waiting for execution..."
-  ]);
+  const { courseId, assignmentId } = useParams();
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
-  const runCode = () => {
-    setOutput(prev => [...prev, "> Executing script...", "Hello World!", "> Execution finished in 0.02s"]);
-  };
+  const [assignment, setAssignment] = useState<Assignment | null>(null);
+  const [course, setCourse] = useState<CourseWithLecturer | null>(null);
+  const [code, setCode] = useState('');
+  const [output, setOutput] = useState<{ text: string; type: 'system' | 'stdout' | 'stderr' }[]>([]);
+  const [running, setRunning] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [existingSub, setExistingSub] = useState<Submission | null>(null);
+
+  // Load assignment + course data
+  useEffect(() => {
+    async function load() {
+      if (!assignmentId || !courseId || !user) return;
+      const [asg, crs, sub] = await Promise.all([
+        getAssignmentById(assignmentId),
+        getCourseById(courseId),
+        getSubmissionByStudentAndAssignment(user.id, assignmentId),
+      ]);
+      setAssignment(asg);
+      setCourse(crs);
+      if (sub) {
+        setExistingSub(sub);
+        setCode(sub.code);
+        setSubmitted(true);
+        setOutput([{ text: '> Previously submitted code loaded', type: 'system' }]);
+      } else {
+        setCode(starterCode[crs?.language ?? 'python'] || starterCode.python);
+        setOutput([{ text: `> ${(crs?.language ?? 'python').toUpperCase()} environment ready`, type: 'system' }]);
+      }
+    }
+    load();
+  }, [assignmentId, courseId, user]);
+
+  const lang = course?.language ?? 'python';
+  const monacoLang = langMap[lang] ?? 'python';
+
+  // Mock Run
+  const handleRun = useCallback(async () => {
+    if (running || !code.trim()) return;
+    setRunning(true);
+    setOutput((p) => [...p, { text: '> Compiling...', type: 'system' }]);
+    await new Promise((r) => setTimeout(r, 800));
+    setOutput((p) => [...p, { text: '> Running...', type: 'system' }]);
+    await new Promise((r) => setTimeout(r, 600));
+
+    // Simulated output based on expected + language
+    if (assignment?.expected_output) {
+      const lines = assignment.expected_output.split('\n');
+      setOutput((p) => [...p, ...lines.map((l) => ({ text: l, type: 'stdout' as const }))]);
+    } else {
+      setOutput((p) => [...p, { text: 'Hello World!', type: 'stdout' }]);
+    }
+    setOutput((p) => [...p, { text: `> Execution finished in 0.04s`, type: 'system' }]);
+    setRunning(false);
+  }, [running, code, assignment]);
+
+  // Submit
+  const handleSubmit = useCallback(async () => {
+    if (submitting || submitted || !user || !assignmentId) return;
+    const confirmed = window.confirm(
+      'Submit your code? This creates an immutable snapshot that will be sent to your lecturer.'
+    );
+    if (!confirmed) return;
+    setSubmitting(true);
+    await mockSubmit(assignmentId, user.id, code, lang, output.filter(o => o.type === 'stdout').map(o => o.text).join('\n'));
+    setSubmitting(false);
+    setSubmitted(true);
+    toast.success('Code submitted successfully!');
+  }, [submitting, submitted, user, assignmentId, code, lang, output]);
+
+  const fileName = lang === 'python' ? 'main.py' : lang === 'java' ? 'Solution.java' : 'main.cpp';
 
   return (
-    <div className="h-screen w-full bg-vpl-dark text-foreground flex flex-col overflow-hidden">
+    <div className="h-dvh w-full bg-vpl-dark text-foreground flex flex-col overflow-hidden">
       {/* IDE Header */}
-      <header className="h-14 border-b border-white/10 bg-vpl-card flex items-center justify-between px-4 shrink-0">
-        <div className="flex items-center gap-4">
-          <Link to="/student">
-            <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-white/5 text-muted-foreground">
-              <ChevronLeft className="h-5 w-5" />
+      <header className="h-12 border-b border-white/10 bg-vpl-card flex items-center justify-between px-3 sm:px-4 shrink-0">
+        <div className="flex items-center gap-3">
+          <Link to={`/student/courses/${courseId}`}>
+            <Button variant="ghost" size="icon" className="h-7 w-7 hover:bg-white/5 text-muted-foreground">
+              <ChevronLeft className="h-4 w-4" />
             </Button>
           </Link>
-          <div>
-            <h1 className="text-sm font-semibold text-foreground flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-              {courseId === "cs101" ? "main.py" : "Assignment_1.cpp"}
+          <div className="min-w-0">
+            <h1 className="text-xs font-semibold text-foreground flex items-center gap-1.5 truncate">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shrink-0" />
+              {fileName}
+              {submitted && (
+                <span className="inline-flex items-center gap-1 text-[10px] text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded-full border border-green-500/20 ml-1">
+                  <CheckCircle2 className="w-2.5 h-2.5" /> Submitted
+                </span>
+              )}
             </h1>
-            <p className="text-xs text-muted-foreground">Last saved 2 mins ago</p>
+            <p className="text-[10px] text-muted-foreground truncate">{assignment?.title ?? 'Loading...'}</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button size="sm" variant="ghost" className="h-8 hover:bg-white/5 text-muted-foreground gap-2">
-            <Save className="h-4 w-4" /> Save
-          </Button>
-          <Button size="sm" variant="ghost" className="h-8 hover:bg-white/5 text-muted-foreground gap-2">
-            <Settings className="h-4 w-4" /> Settings
-          </Button>
-          <Button 
-            size="sm" 
-            className="h-8 bg-green-600 hover:bg-green-700 text-white gap-2 font-medium ml-2 px-4 shadow-[0_0_10px_rgba(22,163,74,0.4)] border-none"
-            onClick={runCode}
+        <div className="flex items-center gap-1.5">
+          <Button
+            size="sm"
+            className="h-7 bg-green-600 hover:bg-green-700 text-white gap-1.5 font-medium px-3 text-xs border-none"
+            onClick={handleRun}
+            disabled={running || !code.trim()}
           >
-            <Play className="h-3 w-3 fill-current" /> Run Code
+            {running ? <Loader2 className="h-3 w-3 animate-spin" /> : <Play className="h-3 w-3 fill-current" />}
+            Run
+          </Button>
+          <Button
+            size="sm"
+            className="h-7 bg-primary hover:bg-primary/90 text-black gap-1.5 font-medium px-3 text-xs shadow-[0_0_10px_rgba(0,255,255,0.3)]"
+            onClick={handleSubmit}
+            disabled={submitting || submitted || !code.trim()}
+          >
+            {submitting ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
+            {submitted ? 'Submitted' : 'Submit'}
           </Button>
         </div>
       </header>
@@ -57,51 +145,69 @@ const VirtualLab = () => {
       {/* Main IDE Area */}
       <div className="flex-1 overflow-hidden">
         <ResizablePanelGroup direction="horizontal">
-          
-          {/* File Explorer / Instructions Side */}
-          <ResizablePanel defaultSize={20} minSize={15} maxSize={30} className="bg-vpl-card border-r border-white/10 hidden md:block">
+          {/* Instructions Panel */}
+          <ResizablePanel defaultSize={22} minSize={15} maxSize={35} className="bg-vpl-card border-r border-white/10 hidden md:block">
             <div className="h-full flex flex-col">
-              <div className="p-3 border-b border-white/10 text-xs font-bold uppercase tracking-wider text-muted-foreground">Instructions</div>
-              <ScrollArea className="flex-1 p-4">
-                <h2 className="text-lg font-bold text-foreground mb-2">Variables & Data Types</h2>
-                <p className="text-sm text-muted-foreground mb-4">Create a program that declares variables of different types and prints them.</p>
-                <div className="space-y-4 text-sm text-muted-foreground">
-                  <div className="p-3 rounded bg-black/20 border border-white/5">
-                    <h3 className="text-foreground font-medium mb-1">Task 1</h3>
-                    <p>Declare an integer variable named <code className="text-vpl-gold">age</code> and output it.</p>
+              <div className="px-3 py-2 border-b border-white/10 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                Instructions
+              </div>
+              <ScrollArea className="flex-1 p-3">
+                {assignment ? (
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-[10px] text-primary font-mono uppercase">{course?.code} &middot; Week {assignment.week_number}</p>
+                      <h2 className="text-sm font-bold text-foreground mt-0.5">{assignment.title}</h2>
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{assignment.description}</p>
+
+                    <div className="space-y-2">
+                      {assignment.tasks.map((task, i) => (
+                        <div key={task.id} className="p-2 rounded bg-black/20 border border-white/5">
+                          <h3 className="text-xs text-foreground font-medium mb-0.5">Task {i + 1}</h3>
+                          <p className="text-[11px] text-muted-foreground">{task.description}</p>
+                          {task.hint && <p className="text-[10px] text-primary/60 mt-1 italic">Hint: {task.hint}</p>}
+                        </div>
+                      ))}
+                    </div>
+
+                    {assignment.expected_output && (
+                      <div className="p-2 rounded bg-green-500/5 border border-green-500/10">
+                        <h3 className="text-xs text-green-400 font-medium mb-1">Expected Output</h3>
+                        <pre className="text-[10px] text-muted-foreground whitespace-pre-wrap font-mono">{assignment.expected_output}</pre>
+                      </div>
+                    )}
                   </div>
-                  <div className="p-3 rounded bg-black/20 border border-white/5">
-                    <h3 className="text-foreground font-medium mb-1">Task 2</h3>
-                    <p>Declare a string variable named <code className="text-green-400">name</code> and output it.</p>
-                  </div>
-                </div>
+                ) : (
+                  <div className="text-xs text-muted-foreground">Loading assignment...</div>
+                )}
               </ScrollArea>
             </div>
           </ResizablePanel>
 
-          <ResizableHandle className="bg-white/10 w-[1px]" />
+          <ResizableHandle className="bg-white/10 w-[1px] hidden md:flex" />
 
-          {/* Code Editor Side */}
-          <ResizablePanel defaultSize={80}>
+          {/* Code Editor + Terminal */}
+          <ResizablePanel defaultSize={78}>
             <ResizablePanelGroup direction="vertical">
-              
-              {/* Editor */}
-              <ResizablePanel defaultSize={70} className="bg-vpl-dark/50">
-                <div className="h-full relative font-mono text-sm p-4">
-                  {/* Line Numbers Simulation */}
-                  <div className="absolute left-0 top-4 bottom-0 w-12 flex flex-col items-end pr-4 text-muted-foreground/50 select-none">
-                    <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div>
-                  </div>
-                  {/* Editor Area */}
-                  <div className="ml-12 h-full text-foreground/90 outline-none" contentEditable spellCheck={false}>
-                    <span className="text-vpl-purple">def</span> <span className="text-blue-400">main</span>():<br/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-muted-foreground/70"># Your code here</span><br/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-vpl-gold">print</span>(<span className="text-green-400">"Hello World!"</span>)<br/>
-                    <br/>
-                    <span className="text-vpl-purple">if</span> __name__ == <span className="text-green-400">"__main__"</span>:<br/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;main()
-                  </div>
-                </div>
+              {/* Monaco Editor */}
+              <ResizablePanel defaultSize={70} className="bg-[#1e1e1e]">
+                <Editor
+                  height="100%"
+                  language={monacoLang}
+                  value={code}
+                  onChange={(v) => !submitted && setCode(v ?? '')}
+                  theme="vs-dark"
+                  options={{
+                    fontSize: 13,
+                    minimap: { enabled: false },
+                    scrollBeyondLastLine: false,
+                    padding: { top: 12 },
+                    lineNumbersMinChars: 3,
+                    readOnly: submitted,
+                    wordWrap: 'on',
+                    automaticLayout: true,
+                  }}
+                />
               </ResizablePanel>
 
               <ResizableHandle className="bg-white/10 h-[1px]" />
@@ -109,22 +215,37 @@ const VirtualLab = () => {
               {/* Terminal */}
               <ResizablePanel defaultSize={30} minSize={10} className="bg-black/40">
                 <div className="h-full flex flex-col">
-                  <div className="h-8 border-b border-white/10 flex items-center px-4 gap-2 bg-vpl-card">
-                    <TerminalIcon className="w-3 h-3 text-muted-foreground" />
-                    <span className="text-xs uppercase font-bold tracking-wider text-muted-foreground">Terminal</span>
+                  <div className="h-7 border-b border-white/10 flex items-center justify-between px-3 bg-vpl-card shrink-0">
+                    <div className="flex items-center gap-1.5">
+                      <TerminalIcon className="w-3 h-3 text-muted-foreground" />
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Output</span>
+                    </div>
+                    <button
+                      onClick={() => setOutput([])}
+                      className="text-[10px] text-muted-foreground hover:text-white transition-colors"
+                    >
+                      Clear
+                    </button>
                   </div>
-                  <ScrollArea className="flex-1 p-4 font-mono text-sm">
+                  <ScrollArea className="flex-1 px-3 py-2 font-mono text-xs">
                     {output.map((line, i) => (
-                      <div key={i} className={`${line.startsWith('>') ? 'text-blue-400' : 'text-foreground'} mb-1`}>{line}</div>
+                      <div
+                        key={i}
+                        className={`mb-0.5 ${
+                          line.type === 'system' ? 'text-blue-400' :
+                          line.type === 'stderr' ? 'text-red-400' :
+                          'text-foreground'
+                        }`}
+                      >
+                        {line.text}
+                      </div>
                     ))}
-                    <div className="animate-pulse text-primary">_</div>
+                    {running && <div className="animate-pulse text-primary">_</div>}
                   </ScrollArea>
                 </div>
               </ResizablePanel>
-
             </ResizablePanelGroup>
           </ResizablePanel>
-
         </ResizablePanelGroup>
       </div>
     </div>

@@ -16,7 +16,7 @@ const LandingPage = () => {
             <div className="w-8 h-8 rounded-lg bg-primary/20 border border-primary/50 flex items-center justify-center">
               <span className="text-primary font-bold font-mono">{`>`}</span>
             </div>
-            <span className="font-bold text-xl tracking-tight">VPL.system</span>
+            <span className="font-bold text-xl tracking-tight">BABCOCK VPL</span>
           </div>
           <div className="flex items-center gap-3 sm:gap-4">
             <Link to="/login">

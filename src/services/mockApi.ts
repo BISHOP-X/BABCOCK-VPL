@@ -38,8 +38,12 @@ const findCourse = (id: string) => mockCourses.find((c) => c.id === id);
 // ---------- Auth ----------
 export async function loginUser(email: string, _password: string): Promise<User | null> {
   await delay();
-  const user = mockUsers.find((u) => u.email === email);
-  return user ?? null;
+  // Demo mode: try exact match first, otherwise return first student
+  const exact = mockUsers.find((u) => u.email === email);
+  if (exact) return exact;
+  // Any email containing 'lec' or 'prof' → lecturer, otherwise → student
+  const isLecturer = /lec|prof|staff/i.test(email);
+  return isLecturer ? mockLecturers[0] : mockStudents[0];
 }
 
 export async function signupUser(
@@ -174,6 +178,16 @@ export async function getSubmissionByStudentAndAssignment(
       (s) => s.student_id === studentId && s.assignment_id === assignmentId,
     ) ?? null
   );
+}
+
+export async function getSubmissionById(id: string): Promise<SubmissionWithDetails | null> {
+  await delay();
+  const sub = mockSubmissions.find((s) => s.id === id);
+  if (!sub) return null;
+  const student = findUser(sub.student_id) as User;
+  const assignment = mockAssignments.find((a) => a.id === sub.assignment_id)!;
+  const grade = mockGrades.find((g) => g.submission_id === sub.id);
+  return { ...sub, student, assignment, grade };
 }
 
 export async function submitCode(
