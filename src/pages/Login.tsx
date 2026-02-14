@@ -11,6 +11,7 @@ const Login = () => {
   const { login, isLoading, isAuthenticated, user } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState<'student' | 'lecturer'>('student');
 
   useEffect(() => {
     if (isAuthenticated && user) {
@@ -21,7 +22,7 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await login({ email, password });
+      await login({ email, password, role });
       toast.success('Welcome back!');
     } catch {
       toast.error('Invalid email or password');
@@ -80,11 +81,39 @@ const Login = () => {
             />
           </div>
 
+          {/* Role selector */}
+          <div className="space-y-1.5">
+            <Label className="text-xs">Sign in as</Label>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setRole('student')}
+                className={`h-10 rounded-lg border text-sm font-medium transition-all ${
+                  role === 'student'
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-border bg-muted/50 text-muted-foreground hover:border-border'
+                }`}
+              >
+                Student
+              </button>
+              <button
+                type="button"
+                onClick={() => setRole('lecturer')}
+                className={`h-10 rounded-lg border text-sm font-medium transition-all ${
+                  role === 'lecturer'
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-border bg-muted/50 text-muted-foreground hover:border-border'
+                }`}
+              >
+                Lecturer
+              </button>
+            </div>
+          </div>
+
           {/* Demo hint */}
           <div className="rounded-lg bg-primary/5 border border-primary/20 px-3 py-2 text-[11px] text-muted-foreground font-mono leading-relaxed">
             <p className="text-primary font-semibold mb-0.5">Demo Mode</p>
-            <p>Any email & password will work.</p>
-            <p className="mt-0.5 text-[10px] opacity-70">Include "lec" or "prof" in the email to sign in as a lecturer</p>
+            <p>Any email & password will work. Select your role above.</p>
           </div>
 
           <Button

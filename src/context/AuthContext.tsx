@@ -43,7 +43,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = useCallback(async (creds: LoginCredentials) => {
     setState((s) => ({ ...s, isLoading: true }));
-    const user = await loginUser(creds.email, creds.password);
+    const user = await loginUser(creds.email, creds.password, creds.role);
     if (!user) {
       setState((s) => ({ ...s, isLoading: false }));
       throw new Error('Invalid email or password');

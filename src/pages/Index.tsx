@@ -20,7 +20,7 @@ const LandingPage = () => {
           </div>
           <div className="flex items-center gap-3 sm:gap-4">
             <Link to="/login">
-              <Button variant="ghost" className="text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted hidden sm:inline-flex">
+              <Button variant="ghost" className="text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted">
                 Sign In
               </Button>
             </Link>

@@ -6,7 +6,7 @@ import { getCourseById, getAssignmentsWithStatus } from '@/services/mockApi';
 import type { CourseWithLecturer, AssignmentWithStatus } from '@/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
-import { Clock, CheckCircle2, AlertCircle, Play, FileText, ChevronRight } from 'lucide-react';
+import { Clock, CheckCircle2, AlertCircle, Play, FileText, ChevronRight, ArrowLeft } from 'lucide-react';
 
 const statusConfig = {
   not_started: { label: 'Not Started', color: 'text-muted-foreground', bg: 'bg-muted/50 border-border', icon: FileText },
@@ -78,6 +78,10 @@ const CourseDetail = () => {
       {/* Course Header */}
       <header className="border-b border-border bg-card/30">
         <div className="container mx-auto px-4 sm:px-6 py-5 sm:py-6">
+          <Link to="/student" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-3">
+            <ArrowLeft className="w-3.5 h-3.5" />
+            Back to Dashboard
+          </Link>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <div className="flex items-center gap-2 mb-1">

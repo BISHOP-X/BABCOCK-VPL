@@ -36,12 +36,16 @@ const findUser = (id: string) => mockUsers.find((u) => u.id === id);
 const findCourse = (id: string) => mockCourses.find((c) => c.id === id);
 
 // ---------- Auth ----------
-export async function loginUser(email: string, _password: string): Promise<User | null> {
+export async function loginUser(email: string, _password: string, role?: 'student' | 'lecturer'): Promise<User | null> {
   await delay();
-  // Demo mode: try exact match first, otherwise return first student
+  // Demo mode: try exact match first
   const exact = mockUsers.find((u) => u.email === email);
   if (exact) return exact;
-  // Any email containing 'lec' or 'prof' → lecturer, otherwise → student
+  // If role explicitly provided (from role toggle), use it directly
+  if (role) {
+    return role === 'lecturer' ? mockLecturers[0] : mockStudents[0];
+  }
+  // Fallback: Any email containing 'lec' or 'prof' → lecturer, otherwise → student
   const isLecturer = /lec|prof|staff/i.test(email);
   return isLecturer ? mockLecturers[0] : mockStudents[0];
 }
