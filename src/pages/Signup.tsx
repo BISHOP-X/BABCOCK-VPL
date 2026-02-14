@@ -37,7 +37,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="h-dvh bg-vpl-dark flex flex-col items-center justify-center px-4 sm:px-6 overflow-hidden relative">
+    <div className="h-dvh bg-background flex flex-col items-center justify-center px-4 sm:px-6 overflow-hidden relative">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-primary/5 rounded-full blur-[120px]" />
       </div>
@@ -49,13 +49,13 @@ const Signup = () => {
             <div className="w-9 h-9 rounded-lg bg-primary/20 border border-primary/50 flex items-center justify-center">
               <span className="text-primary font-bold font-mono">{`>`}</span>
             </div>
-            <span className="font-bold text-xl tracking-tight text-white">BABCOCK VPL</span>
+            <span className="font-bold text-xl tracking-tight text-foreground">BABCOCK VPL</span>
           </Link>
           <p className="text-sm text-muted-foreground">Create a new account</p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-5 sm:p-7 space-y-3.5 border border-white/10">
+        <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-5 sm:p-7 space-y-3.5 border border-border">
           {/* Name & Email row on larger screens */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div className="space-y-1.5">
@@ -66,7 +66,7 @@ const Signup = () => {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 required
-                className="h-10 bg-white/5 border-white/10 focus:border-primary text-sm"
+                className="h-10 bg-muted/50 border-border focus:border-primary text-sm"
               />
             </div>
             <div className="space-y-1.5">
@@ -78,7 +78,7 @@ const Signup = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="h-10 bg-white/5 border-white/10 focus:border-primary text-sm"
+                className="h-10 bg-muted/50 border-border focus:border-primary text-sm"
               />
             </div>
           </div>
@@ -93,7 +93,7 @@ const Signup = () => {
                 className={`h-10 rounded-lg border text-sm font-medium transition-all ${
                   role === 'student'
                     ? 'border-primary bg-primary/10 text-primary'
-                    : 'border-white/10 bg-white/5 text-muted-foreground hover:border-white/20'
+                    : 'border-border bg-muted/50 text-muted-foreground hover:border-border'
                 }`}
               >
                 Student
@@ -104,7 +104,7 @@ const Signup = () => {
                 className={`h-10 rounded-lg border text-sm font-medium transition-all ${
                   role === 'lecturer'
                     ? 'border-primary bg-primary/10 text-primary'
-                    : 'border-white/10 bg-white/5 text-muted-foreground hover:border-white/20'
+                    : 'border-border bg-muted/50 text-muted-foreground hover:border-border'
                 }`}
               >
                 Lecturer
@@ -124,7 +124,7 @@ const Signup = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                className="h-10 bg-white/5 border-white/10 focus:border-primary text-sm"
+                className="h-10 bg-muted/50 border-border focus:border-primary text-sm"
               />
             </div>
             <div className="space-y-1.5">
@@ -137,7 +137,7 @@ const Signup = () => {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 minLength={6}
-                className="h-10 bg-white/5 border-white/10 focus:border-primary text-sm"
+                className="h-10 bg-muted/50 border-border focus:border-primary text-sm"
               />
             </div>
           </div>
@@ -145,7 +145,7 @@ const Signup = () => {
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full h-11 bg-primary text-black font-semibold hover:bg-primary/90 shadow-[0_0_20px_rgba(0,255,255,0.3)]"
+            className="w-full h-11 bg-primary text-primary-foreground font-semibold hover:bg-primary/90 shadow-lg shadow-primary/20"
           >
             {isLoading ? 'Creating account…' : 'Create Account'}
           </Button>

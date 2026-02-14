@@ -70,7 +70,7 @@ const LecturerCourseManagement = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-vpl-dark">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <div className="flex items-center justify-center h-[60vh]">
           <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
@@ -81,11 +81,11 @@ const LecturerCourseManagement = () => {
 
   if (!course) {
     return (
-      <div className="min-h-screen bg-vpl-dark">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <div className="flex flex-col items-center justify-center h-[60vh] text-muted-foreground">
           <p>Course not found</p>
-          <Link to="/lecturer"><Button variant="outline" className="mt-4 border-white/10">Back to Dashboard</Button></Link>
+          <Link to="/lecturer"><Button variant="outline" className="mt-4 border-border">Back to Dashboard</Button></Link>
         </div>
       </div>
     );
@@ -98,11 +98,11 @@ const LecturerCourseManagement = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-vpl-dark text-foreground">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar />
 
       {/* Header */}
-      <header className="border-b border-white/10 bg-vpl-card/30">
+      <header className="border-b border-border bg-card/30">
         <div className="container mx-auto px-4 sm:px-6 py-5">
           <Link
             to="/lecturer"
@@ -126,12 +126,12 @@ const LecturerCourseManagement = () => {
             {/* Quick Stats */}
             {stats && (
               <div className="flex items-center gap-3 text-xs">
-                <div className="text-center px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
-                  <p className="text-lg font-bold text-white">{stats.total_students}</p>
+                <div className="text-center px-3 py-1.5 rounded-lg bg-muted/50 border border-border">
+                  <p className="text-lg font-bold text-foreground">{stats.total_students}</p>
                   <p className="text-muted-foreground">Students</p>
                 </div>
-                <div className="text-center px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
-                  <p className="text-lg font-bold text-white">{stats.total_assignments}</p>
+                <div className="text-center px-3 py-1.5 rounded-lg bg-muted/50 border border-border">
+                  <p className="text-lg font-bold text-foreground">{stats.total_assignments}</p>
                   <p className="text-muted-foreground">Assignments</p>
                 </div>
                 <div className="text-center px-3 py-1.5 rounded-lg bg-primary/5 border border-primary/20">
@@ -153,8 +153,8 @@ const LecturerCourseManagement = () => {
                   onClick={() => setTab(t.key)}
                   className={`flex items-center gap-1.5 px-4 py-2 text-xs font-medium rounded-t-lg border border-b-0 transition-colors ${
                     isActive
-                      ? 'bg-vpl-dark border-white/10 text-white'
-                      : 'bg-transparent border-transparent text-muted-foreground hover:text-white'
+                      ? 'bg-background border-border text-foreground'
+                      : 'bg-transparent border-transparent text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" /> {t.label}
@@ -187,22 +187,22 @@ const LecturerCourseManagement = () => {
                 return (
                   <div
                     key={asg.id}
-                    className="rounded-xl border border-white/10 bg-vpl-card/50 p-4 flex items-center gap-4"
+                    className="rounded-xl border border-border bg-card/50 p-4 flex items-center gap-4"
                   >
-                    <div className="shrink-0 w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex flex-col items-center justify-center">
+                    <div className="shrink-0 w-10 h-10 rounded-lg bg-muted/50 border border-border flex flex-col items-center justify-center">
                       <span className="text-[9px] uppercase text-muted-foreground leading-none">Wk</span>
-                      <span className="text-sm font-bold text-white">{asg.week_number}</span>
+                      <span className="text-sm font-bold text-foreground">{asg.week_number}</span>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-semibold text-white truncate">{asg.title}</h3>
+                      <h3 className="text-sm font-semibold text-foreground truncate">{asg.title}</h3>
                       <p className="text-[11px] text-muted-foreground mt-0.5">
                         {asg.tasks.length} tasks &middot; Due {dueDate.toLocaleDateString('en-NG', { month: 'short', day: 'numeric' })}
                       </p>
                     </div>
                     {isPast ? (
-                      <span className="text-[10px] text-red-400 flex items-center gap-1"><AlertCircle className="w-3 h-3" /> Past Due</span>
+                      <span className="text-[10px] text-red-500 dark:text-red-400 flex items-center gap-1"><AlertCircle className="w-3 h-3" /> Past Due</span>
                     ) : (
-                      <span className="text-[10px] text-green-400 flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Active</span>
+                      <span className="text-[10px] text-green-500 dark:text-green-400 flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Active</span>
                     )}
                   </div>
                 );
@@ -218,25 +218,25 @@ const LecturerCourseManagement = () => {
               {students.length} Enrolled Student{students.length !== 1 ? 's' : ''}
             </h2>
 
-            <div className="rounded-xl border border-white/10 overflow-hidden">
+            <div className="rounded-xl border border-border overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-vpl-card/50 text-xs text-muted-foreground uppercase tracking-wider">
+                  <tr className="bg-card/50 text-xs text-muted-foreground uppercase tracking-wider">
                     <th className="text-left p-3">Student</th>
                     <th className="text-left p-3 hidden sm:table-cell">Matric No.</th>
                     <th className="text-left p-3 hidden md:table-cell">Department</th>
                     <th className="text-right p-3">Email</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <tbody className="divide-y divide-border/50">
                   {students.map((s) => (
-                    <tr key={s.id} className="hover:bg-white/[0.02] transition-colors">
+                    <tr key={s.id} className="hover:bg-muted/30 transition-colors">
                       <td className="p-3">
                         <div className="flex items-center gap-2">
                           <div className="w-7 h-7 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">
                             {s.full_name.split(' ').map((n) => n[0]).join('')}
                           </div>
-                          <span className="text-white font-medium">{s.full_name}</span>
+                          <span className="text-foreground font-medium">{s.full_name}</span>
                         </div>
                       </td>
                       <td className="p-3 text-muted-foreground hidden sm:table-cell font-mono text-xs">{s.matric_number ?? '—'}</td>
@@ -263,7 +263,7 @@ const LecturerCourseManagement = () => {
                   className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
                     selectedAssignment === asg.id
                       ? 'bg-primary/10 border-primary/30 text-primary'
-                      : 'bg-white/5 border-white/10 text-muted-foreground hover:text-white'
+                      : 'bg-muted/50 border-border text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   Wk {asg.week_number}
@@ -283,19 +283,19 @@ const LecturerCourseManagement = () => {
                   return (
                     <div
                       key={sub.id}
-                      className="rounded-xl border border-white/10 bg-vpl-card/50 p-4 flex items-center gap-4"
+                      className="rounded-xl border border-border bg-card/50 p-4 flex items-center gap-4"
                     >
                       <div className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">
                         {sub.student.full_name.split(' ').map((n) => n[0]).join('')}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-white">{sub.student.full_name}</p>
+                        <p className="text-sm font-medium text-foreground">{sub.student.full_name}</p>
                         <p className="text-[11px] text-muted-foreground">
                           Submitted {new Date(sub.submitted_at).toLocaleString('en-NG', { dateStyle: 'medium', timeStyle: 'short' })}
                         </p>
                       </div>
                       {graded ? (
-                        <span className="text-sm font-bold text-green-400">{sub.grade!.score}/100</span>
+                        <span className="text-sm font-bold text-green-500 dark:text-green-400">{sub.grade!.score}/100</span>
                       ) : (
                         <span className="text-[10px] text-yellow-400 flex items-center gap-1">
                           <Clock className="w-3 h-3" /> Ungraded

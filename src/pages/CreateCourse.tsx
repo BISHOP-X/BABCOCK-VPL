@@ -43,7 +43,7 @@ const CreateCourse = () => {
   const valid = form.title.trim() && form.code.trim() && form.description.trim();
 
   return (
-    <div className="min-h-screen bg-vpl-dark text-foreground">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar />
 
       <div className="container mx-auto px-4 sm:px-6 py-6 max-w-2xl">
@@ -67,7 +67,7 @@ const CreateCourse = () => {
                 value={form.code}
                 onChange={(e) => set('code', e.target.value)}
                 placeholder="e.g. CS101"
-                className="mt-1.5 bg-white/5 border-white/10"
+                className="mt-1.5 bg-muted/50 border-border"
               />
             </div>
             <div>
@@ -75,10 +75,10 @@ const CreateCourse = () => {
               <select
                 value={form.language}
                 onChange={(e) => set('language', e.target.value)}
-                className="mt-1.5 w-full h-10 rounded-md bg-white/5 border border-white/10 text-sm text-white px-3"
+                className="mt-1.5 w-full h-10 rounded-md bg-muted/50 border border-border text-sm text-foreground px-3"
               >
                 {languages.map((l) => (
-                  <option key={l.value} value={l.value} className="bg-vpl-dark">{l.label}</option>
+                  <option key={l.value} value={l.value} className="bg-background">{l.label}</option>
                 ))}
               </select>
             </div>
@@ -90,7 +90,7 @@ const CreateCourse = () => {
               value={form.title}
               onChange={(e) => set('title', e.target.value)}
               placeholder="e.g. Introduction to Python Programming"
-              className="mt-1.5 bg-white/5 border-white/10"
+              className="mt-1.5 bg-muted/50 border-border"
             />
           </div>
 
@@ -101,7 +101,7 @@ const CreateCourse = () => {
               onChange={(e) => set('description', e.target.value)}
               placeholder="Brief course description..."
               rows={3}
-              className="mt-1.5 w-full rounded-md bg-white/5 border border-white/10 text-sm text-white px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="mt-1.5 w-full rounded-md bg-muted/50 border border-border text-sm text-foreground px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-primary/50"
             />
           </div>
 
@@ -110,11 +110,11 @@ const CreateCourse = () => {
             <Input
               value={form.semester}
               onChange={(e) => set('semester', e.target.value)}
-              className="mt-1.5 bg-white/5 border-white/10"
+              className="mt-1.5 bg-muted/50 border-border"
             />
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
             <Link to="/lecturer">
               <Button type="button" variant="ghost" className="text-xs">Cancel</Button>
             </Link>

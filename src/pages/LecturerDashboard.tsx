@@ -50,11 +50,11 @@ const LecturerDashboard = () => {
     : 0;
 
   return (
-    <div className="min-h-screen bg-vpl-dark text-foreground">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar />
 
       {/* Welcome Header */}
-      <header className="border-b border-white/10 bg-vpl-card/30">
+      <header className="border-b border-border bg-card/30">
         <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
@@ -72,19 +72,19 @@ const LecturerDashboard = () => {
 
           {/* Quick Stats */}
           <div className="flex items-center gap-4 mt-4">
-            <div className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
+            <div className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-muted/50 border border-border">
               <BookOpen className="w-3.5 h-3.5 text-primary" />
-              <span className="text-white font-medium">{courses.length}</span>
+              <span className="text-foreground font-medium">{courses.length}</span>
               <span className="text-muted-foreground">Courses</span>
             </div>
-            <div className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
-              <Users className="w-3.5 h-3.5 text-blue-400" />
-              <span className="text-white font-medium">{totalStudents}</span>
+            <div className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-muted/50 border border-border">
+              <Users className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />
+              <span className="text-foreground font-medium">{totalStudents}</span>
               <span className="text-muted-foreground">Students</span>
             </div>
-            <div className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
-              <Activity className="w-3.5 h-3.5 text-green-400" />
-              <span className="text-white font-medium">{totalAssignments}</span>
+            <div className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-muted/50 border border-border">
+              <Activity className="w-3.5 h-3.5 text-green-500 dark:text-green-400" />
+              <span className="text-foreground font-medium">{totalAssignments}</span>
               <span className="text-muted-foreground">Assignments</span>
             </div>
             {avgScore > 0 && (
@@ -111,7 +111,7 @@ const LecturerDashboard = () => {
             <BookOpen className="w-10 h-10 mx-auto mb-3 opacity-40" />
             <p>No courses yet. Create your first course to get started.</p>
             <Link to="/lecturer/create-course">
-              <Button variant="outline" className="mt-4 border-white/10 gap-1.5">
+              <Button variant="outline" className="mt-4 border-border gap-1.5">
                 <Plus className="w-4 h-4" /> Create Course
               </Button>
             </Link>
@@ -124,18 +124,18 @@ const LecturerDashboard = () => {
                 <Link
                   key={course.id}
                   to={`/lecturer/courses/${course.id}`}
-                  className="group rounded-xl overflow-hidden bg-vpl-card border border-white/10 hover:border-primary/40 transition-all duration-300 hover:shadow-lg flex flex-col"
+                  className="group rounded-xl overflow-hidden bg-card border border-border hover:border-primary/40 transition-all duration-300 hover:shadow-lg flex flex-col"
                   style={{ animationDelay: `${idx * 80}ms` }}
                 >
                   {/* Language header */}
                   <div className={`h-24 bg-gradient-to-br ${langColor[course.language]} flex items-center justify-between px-5`}>
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-white/60">{course.code}</span>
-                      <h3 className="text-base sm:text-lg font-bold text-white mt-0.5 group-hover:text-primary transition-colors">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-foreground/60">{course.code}</span>
+                      <h3 className="text-base sm:text-lg font-bold text-foreground mt-0.5 group-hover:text-primary transition-colors">
                         {course.title}
                       </h3>
                     </div>
-                    <div className="w-10 h-10 rounded-lg bg-black/20 border border-white/10 flex items-center justify-center text-xs font-bold text-white/80">
+                    <div className="w-10 h-10 rounded-lg bg-foreground/5 border border-border flex items-center justify-center text-xs font-bold text-foreground/80">
                       {langIcon[course.language] ?? course.language.toUpperCase().slice(0, 3)}
                     </div>
                   </div>
@@ -146,12 +146,12 @@ const LecturerDashboard = () => {
 
                     {stats && (
                       <div className="grid grid-cols-3 gap-2 mb-3">
-                        <div className="text-center p-2 rounded-lg bg-white/5 border border-white/5">
-                          <p className="text-sm font-bold text-white">{stats.total_students}</p>
+                        <div className="text-center p-2 rounded-lg bg-muted/50 border border-border/50">
+                          <p className="text-sm font-bold text-foreground">{stats.total_students}</p>
                           <p className="text-[10px] text-muted-foreground">Students</p>
                         </div>
-                        <div className="text-center p-2 rounded-lg bg-white/5 border border-white/5">
-                          <p className="text-sm font-bold text-white">{stats.total_assignments}</p>
+                        <div className="text-center p-2 rounded-lg bg-muted/50 border border-border/50">
+                          <p className="text-sm font-bold text-foreground">{stats.total_assignments}</p>
                           <p className="text-[10px] text-muted-foreground">Assign.</p>
                         </div>
                         <div className="text-center p-2 rounded-lg bg-primary/5 border border-primary/10">
@@ -161,7 +161,7 @@ const LecturerDashboard = () => {
                       </div>
                     )}
 
-                    <div className="mt-auto flex items-center justify-end text-[11px] text-primary group-hover:translate-x-0.5 transition-transform pt-2 border-t border-white/5">
+                    <div className="mt-auto flex items-center justify-end text-[11px] text-primary group-hover:translate-x-0.5 transition-transform pt-2 border-t border-border/50">
                       Manage Course <ChevronRight className="w-3 h-3 ml-0.5" />
                     </div>
                   </div>

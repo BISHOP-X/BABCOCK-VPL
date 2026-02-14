@@ -57,13 +57,15 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        // Custom Theme Colors
+        // Custom Theme Colors — now CSS-variable based for light/dark
         vpl: {
-          dark: "hsl(222 47% 6%)",     // Deep navy for background
-          card: "hsl(222 47% 11%)",    // Slightly lighter for cards
-          accent: "hsl(180 100% 50%)", // Cyan neon accent
-          gold: "hsl(35 100% 50%)",    // Warm amber accent
-          purple: "hsl(270 100% 60%)", // Deep purple accent
+          dark: "hsl(var(--vpl-bg))",
+          card: "hsl(var(--vpl-card))",
+          surface: "hsl(var(--vpl-surface))",
+          "surface-hover": "hsl(var(--vpl-surface-hover))",
+          accent: "hsl(var(--primary))",
+          gold: "hsl(35 100% 50%)",
+          purple: "hsl(270 100% 60%)",
         }
       },
       borderRadius: {

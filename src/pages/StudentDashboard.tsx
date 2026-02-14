@@ -49,11 +49,11 @@ const StudentDashboard = () => {
   const totalSubmitted = allAssignments.filter((a) => a.status === 'submitted' || a.status === 'graded').length;
 
   return (
-    <div className="min-h-screen bg-vpl-dark text-foreground">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar />
 
       {/* Welcome Header */}
-      <header className="border-b border-white/10 bg-vpl-card/30">
+      <header className="border-b border-border bg-card/30">
         <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
           <h1 className="text-2xl sm:text-3xl font-bold">Welcome back, {firstName}</h1>
           <p className="text-sm text-muted-foreground mt-1">
@@ -64,19 +64,19 @@ const StudentDashboard = () => {
 
           {/* Quick stats */}
           <div className="flex items-center gap-4 mt-4">
-            <div className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
+            <div className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-muted/50 border border-border">
               <BookOpen className="w-3.5 h-3.5 text-primary" />
-              <span className="text-white font-medium">{enrollments.length}</span>
+              <span className="text-foreground font-medium">{enrollments.length}</span>
               <span className="text-muted-foreground">Courses</span>
             </div>
-            <div className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
-              <AlertCircle className="w-3.5 h-3.5 text-yellow-400" />
-              <span className="text-white font-medium">{totalPending}</span>
+            <div className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-muted/50 border border-border">
+              <AlertCircle className="w-3.5 h-3.5 text-yellow-500 dark:text-yellow-400" />
+              <span className="text-foreground font-medium">{totalPending}</span>
               <span className="text-muted-foreground">Pending</span>
             </div>
-            <div className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
-              <CheckCircle2 className="w-3.5 h-3.5 text-green-400" />
-              <span className="text-white font-medium">{totalSubmitted}</span>
+            <div className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-muted/50 border border-border">
+              <CheckCircle2 className="w-3.5 h-3.5 text-green-500 dark:text-green-400" />
+              <span className="text-foreground font-medium">{totalSubmitted}</span>
               <span className="text-muted-foreground">Submitted</span>
             </div>
           </div>
@@ -112,18 +112,18 @@ const StudentDashboard = () => {
                 <Link
                   key={course.id}
                   to={`/student/courses/${course.id}`}
-                  className="group rounded-xl overflow-hidden bg-vpl-card border border-white/10 hover:border-primary/40 transition-all duration-300 hover:shadow-lg flex flex-col"
+                  className="group rounded-xl overflow-hidden bg-card border border-border hover:border-primary/40 transition-all duration-300 hover:shadow-lg flex flex-col"
                   style={{ animationDelay: `${idx * 80}ms` }}
                 >
                   {/* Language header */}
                   <div className={`h-24 bg-gradient-to-br ${langColor[course.language]} flex items-center justify-between px-5`}>
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-white/60">{course.code}</span>
-                      <h3 className="text-base sm:text-lg font-bold text-white mt-0.5 group-hover:text-primary transition-colors">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-foreground/60">{course.code}</span>
+                      <h3 className="text-base sm:text-lg font-bold text-foreground mt-0.5 group-hover:text-primary transition-colors">
                         {course.title}
                       </h3>
                     </div>
-                    <div className="w-10 h-10 rounded-lg bg-black/20 border border-white/10 flex items-center justify-center text-xs font-bold text-white/80">
+                    <div className="w-10 h-10 rounded-lg bg-foreground/5 border border-border flex items-center justify-center text-xs font-bold text-foreground/80">
                       {langIcon[course.language] ?? course.language.toUpperCase().slice(0, 3)}
                     </div>
                   </div>
@@ -134,21 +134,21 @@ const StudentDashboard = () => {
                     <div className="mb-3">
                       <div className="flex justify-between text-[11px] text-muted-foreground mb-1">
                         <span>Completion</span>
-                        <span className="text-white font-medium">{progress}%</span>
+                        <span className="text-foreground font-medium">{progress}%</span>
                       </div>
-                      <Progress value={progress} className="h-1.5 bg-white/10" />
+                      <Progress value={progress} className="h-1.5 bg-muted" />
                     </div>
 
                     {/* Next assignment */}
                     {nextAssignment && (
-                      <div className="flex items-center gap-2 text-xs bg-white/5 p-2 rounded-lg border border-white/5 mb-3">
-                        <Clock className="w-3.5 h-3.5 text-yellow-400 shrink-0" />
-                        <span className="truncate text-white/80">{nextAssignment.title}</span>
+                      <div className="flex items-center gap-2 text-xs bg-muted/50 p-2 rounded-lg border border-border/50 mb-3">
+                        <Clock className="w-3.5 h-3.5 text-yellow-500 dark:text-yellow-400 shrink-0" />
+                        <span className="truncate text-foreground/80">{nextAssignment.title}</span>
                       </div>
                     )}
 
                     {/* Footer stats */}
-                    <div className="mt-auto flex items-center justify-between text-[11px] text-muted-foreground pt-2 border-t border-white/5">
+                    <div className="mt-auto flex items-center justify-between text-[11px] text-muted-foreground pt-2 border-t border-border/50">
                       <span>{asgns.length} assignments</span>
                       <span className="flex items-center gap-1 text-primary group-hover:translate-x-0.5 transition-transform">
                         View Course <ChevronRight className="w-3 h-3" />

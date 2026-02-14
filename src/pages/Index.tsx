@@ -8,9 +8,9 @@ import featureCompile from "@/assets/feature-compile.jpg";
 
 const LandingPage = () => {
   return (
-    <div className="min-h-screen bg-vpl-dark text-foreground selection:bg-primary/30">
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary/30">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 glass-panel border-b-0 border-white/5 bg-black/20 backdrop-blur-md">
+      <nav className="fixed top-0 w-full z-50 glass-panel border-b-0 border-border/50 bg-background/80 backdrop-blur-md">
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-primary/20 border border-primary/50 flex items-center justify-center">
@@ -20,12 +20,12 @@ const LandingPage = () => {
           </div>
           <div className="flex items-center gap-3 sm:gap-4">
             <Link to="/login">
-              <Button variant="ghost" className="text-sm font-medium text-muted-foreground hover:text-white hover:bg-white/10 hidden sm:inline-flex">
+              <Button variant="ghost" className="text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted hidden sm:inline-flex">
                 Sign In
               </Button>
             </Link>
             <Link to="/signup">
-              <Button variant="default" className="bg-primary text-black hover:bg-primary/90 font-semibold shadow-[0_0_20px_rgba(0,255,255,0.3)] text-sm px-5 h-10">
+              <Button variant="default" className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold shadow-lg shadow-primary/20 text-sm px-5 h-10">
                 Get Started
               </Button>
             </Link>
@@ -42,8 +42,8 @@ const LandingPage = () => {
             alt="Virtual Programming Lab Background" 
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-vpl-dark via-vpl-dark/80 to-transparent" />
-          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
+          <div className="absolute inset-0 bg-foreground/20" />
         </div>
 
         {/* Hero Content */}
@@ -69,12 +69,12 @@ const LandingPage = () => {
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-4">
               <Link to="/signup">
-                <Button size="lg" className="h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg bg-white text-black hover:bg-white/90 font-semibold w-full sm:w-auto">
+                <Button size="lg" className="h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg bg-primary text-primary-foreground hover:bg-primary/90 font-semibold w-full sm:w-auto">
                   Create Account
                 </Button>
               </Link>
               <Link to="/login">
-                <Button size="lg" variant="outline" className="h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg glass-card border-white/10 hover:bg-white/10 hover:text-white w-full sm:w-auto">
+                <Button size="lg" variant="outline" className="h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg glass-card border-border hover:bg-muted hover:text-foreground w-full sm:w-auto">
                   Sign In
                 </Button>
               </Link>
@@ -84,11 +84,11 @@ const LandingPage = () => {
       </section>
 
       {/* Features Grid */}
-      <section className="py-24 bg-vpl-dark relative z-10">
+      <section className="py-24 bg-background relative z-10">
         <div className="container px-6">
           <div className="grid md:grid-cols-3 gap-8">
             {/* Feature 1 */}
-            <div className="group relative rounded-2xl overflow-hidden border border-white/10 bg-vpl-card hover:-translate-y-1 transition-transform duration-300">
+            <div className="group relative rounded-2xl overflow-hidden border border-border bg-card hover:-translate-y-1 transition-transform duration-300">
               <div className="aspect-[4/3] relative overflow-hidden">
                 <img 
                   src={featureIde} 
@@ -98,13 +98,13 @@ const LandingPage = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
               </div>
               <div className="p-6 relative">
-                <h3 className="text-2xl font-bold mb-2 text-white group-hover:text-primary transition-colors">Pro-Grade IDE</h3>
+                <h3 className="text-2xl font-bold mb-2 text-foreground group-hover:text-primary transition-colors">Pro-Grade IDE</h3>
                 <p className="text-muted-foreground">Monaco-powered editor with syntax highlighting, autocomplete, and support for Python, Java, and C++.</p>
               </div>
             </div>
 
             {/* Feature 2 */}
-            <div className="group relative rounded-2xl overflow-hidden border border-white/10 bg-vpl-card hover:-translate-y-1 transition-transform duration-300">
+            <div className="group relative rounded-2xl overflow-hidden border border-border bg-card hover:-translate-y-1 transition-transform duration-300">
               <div className="aspect-[4/3] relative overflow-hidden">
                 <img 
                   src={featureCompile} 
@@ -114,13 +114,13 @@ const LandingPage = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
               </div>
               <div className="p-6 relative">
-                <h3 className="text-2xl font-bold mb-2 text-white group-hover:text-primary transition-colors">Cloud Compilation</h3>
+                <h3 className="text-2xl font-bold mb-2 text-foreground group-hover:text-primary transition-colors">Cloud Compilation</h3>
                 <p className="text-muted-foreground">Run Python, Java, and C++ code instantly via cloud-based compilers. See output in real time, right in your browser.</p>
               </div>
             </div>
 
             {/* Feature 3 */}
-            <div className="group relative rounded-2xl overflow-hidden border border-white/10 bg-vpl-card hover:-translate-y-1 transition-transform duration-300">
+            <div className="group relative rounded-2xl overflow-hidden border border-border bg-card hover:-translate-y-1 transition-transform duration-300">
               <div className="aspect-[4/3] relative overflow-hidden">
                 <img 
                   src={featureAnalytics} 
@@ -130,7 +130,7 @@ const LandingPage = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
               </div>
               <div className="p-6 relative">
-                <h3 className="text-2xl font-bold mb-2 text-white group-hover:text-primary transition-colors">Submission & Grading</h3>
+                <h3 className="text-2xl font-bold mb-2 text-foreground group-hover:text-primary transition-colors">Submission & Grading</h3>
                 <p className="text-muted-foreground">Students submit code per assignment. Lecturers review, grade, and leave feedback — all in one streamlined workflow.</p>
               </div>
             </div>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import Navbar from '@/components/Navbar';
+import { useTheme } from '@/context/ThemeContext';
 import { getSubmissionById } from '@/services/mockApi';
 import type { SubmissionWithDetails } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -11,6 +12,7 @@ const langMap: Record<string, string> = { python: 'python', java: 'java', cpp: '
 
 const SubmissionView = () => {
   const { submissionId } = useParams();
+  const { theme } = useTheme();
   const [data, setData] = useState<SubmissionWithDetails | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -26,7 +28,7 @@ const SubmissionView = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-vpl-dark">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <div className="flex items-center justify-center h-[60vh]">
           <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
@@ -37,12 +39,12 @@ const SubmissionView = () => {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-vpl-dark">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <div className="flex flex-col items-center justify-center h-[60vh] text-muted-foreground">
           <FileText className="w-10 h-10 mb-3 opacity-40" />
           <p>Submission not found</p>
-          <Link to="/student"><Button variant="outline" className="mt-4 border-white/10">Back to Dashboard</Button></Link>
+          <Link to="/student"><Button variant="outline" className="mt-4 border-border">Back to Dashboard</Button></Link>
         </div>
       </div>
     );
@@ -52,11 +54,11 @@ const SubmissionView = () => {
   const submitDate = new Date(data.submitted_at);
 
   return (
-    <div className="min-h-screen bg-vpl-dark text-foreground">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar />
 
       {/* Header */}
-      <header className="border-b border-white/10 bg-vpl-card/30">
+      <header className="border-b border-border bg-card/30">
         <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-5">
           <Link
             to={`/student/courses/${data.assignment.course_id}`}
@@ -76,10 +78,10 @@ const SubmissionView = () => {
             {graded ? (
               <div className="flex items-center gap-3">
                 <div className="text-right">
-                  <p className="text-2xl font-bold text-green-400">{data.grade!.score}<span className="text-sm text-muted-foreground">/100</span></p>
+                  <p className="text-2xl font-bold text-green-500 dark:text-green-400">{data.grade!.score}<span className="text-sm text-muted-foreground">/100</span></p>
                 </div>
                 <div className="w-10 h-10 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center">
-                  <CheckCircle2 className="w-5 h-5 text-green-400" />
+                  <CheckCircle2 className="w-5 h-5 text-green-500 dark:text-green-400" />
                 </div>
               </div>
             ) : (
@@ -95,8 +97,8 @@ const SubmissionView = () => {
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Code Panel */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="rounded-xl border border-white/10 overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-2 bg-vpl-card/50 border-b border-white/10">
+            <div className="rounded-xl border border-border overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-2 bg-card/50 border-b border-border">
                 <span className="text-xs font-medium text-muted-foreground">Submitted Code</span>
                 <span className="text-[10px] font-mono text-primary">{data.language}</span>
               </div>
@@ -104,7 +106,7 @@ const SubmissionView = () => {
                 height="400px"
                 language={langMap[data.language] ?? data.language}
                 value={data.code}
-                theme="vs-dark"
+                theme={theme === 'dark' ? 'vs-dark' : 'vs'}
                 options={{
                   readOnly: true,
                   minimap: { enabled: false },
@@ -118,11 +120,11 @@ const SubmissionView = () => {
             </div>
 
             {/* Output */}
-            <div className="rounded-xl border border-white/10 overflow-hidden">
-              <div className="px-4 py-2 bg-vpl-card/50 border-b border-white/10">
+            <div className="rounded-xl border border-border overflow-hidden">
+              <div className="px-4 py-2 bg-card/50 border-b border-border">
                 <span className="text-xs font-medium text-muted-foreground">Program Output</span>
               </div>
-              <div className="bg-black/40 p-4 font-mono text-xs text-white/80 whitespace-pre-wrap min-h-[80px]">
+              <div className="vpl-terminal-bg p-4 font-mono text-xs text-foreground/80 whitespace-pre-wrap min-h-[80px]">
                 {data.output || '(No output)'}
               </div>
             </div>
@@ -131,9 +133,9 @@ const SubmissionView = () => {
           {/* Sidebar — Grade Details */}
           <div className="space-y-4">
             {/* Assignment Info */}
-            <div className="rounded-xl border border-white/10 bg-vpl-card/50 p-4">
+            <div className="rounded-xl border border-border bg-card/50 p-4">
               <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Assignment Details</h3>
-              <p className="text-sm text-white/80 mb-3">{data.assignment.description}</p>
+              <p className="text-sm text-foreground/80 mb-3">{data.assignment.description}</p>
               <div className="space-y-2">
                 {data.assignment.tasks.map((task) => (
                   <div key={task.id} className="flex items-start gap-2 text-xs text-muted-foreground">
@@ -147,17 +149,17 @@ const SubmissionView = () => {
             {/* Grade Card */}
             {graded && data.grade && (
               <div className="rounded-xl border border-green-500/20 bg-green-500/5 p-4">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-green-400 mb-3 flex items-center gap-1.5">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-green-500 dark:text-green-400 mb-3 flex items-center gap-1.5">
                   <Star className="w-3.5 h-3.5" /> Grade
                 </h3>
                 <div className="flex items-baseline gap-1 mb-3">
-                  <span className="text-3xl font-bold text-green-400">{data.grade.score}</span>
+                  <span className="text-3xl font-bold text-green-500 dark:text-green-400">{data.grade.score}</span>
                   <span className="text-sm text-muted-foreground">/ 100</span>
                 </div>
                 {data.grade.feedback && (
-                  <div className="p-3 rounded-lg bg-black/20 border border-white/5">
+                  <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
                     <p className="text-xs text-muted-foreground mb-1 font-medium">Feedback</p>
-                    <p className="text-sm text-white/80">{data.grade.feedback}</p>
+                    <p className="text-sm text-foreground/80">{data.grade.feedback}</p>
                   </div>
                 )}
                 <p className="text-[10px] text-muted-foreground mt-3 flex items-center gap-1">

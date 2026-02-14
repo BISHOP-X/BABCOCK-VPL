@@ -29,7 +29,7 @@ const Login = () => {
   };
 
   return (
-    <div className="h-dvh bg-vpl-dark flex flex-col items-center justify-center px-4 sm:px-6 overflow-hidden relative">
+    <div className="h-dvh bg-background flex flex-col items-center justify-center px-4 sm:px-6 overflow-hidden relative">
       {/* Background glow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-primary/5 rounded-full blur-[120px]" />
@@ -42,13 +42,13 @@ const Login = () => {
             <div className="w-9 h-9 rounded-lg bg-primary/20 border border-primary/50 flex items-center justify-center">
               <span className="text-primary font-bold font-mono">{`>`}</span>
             </div>
-            <span className="font-bold text-xl tracking-tight text-white">BABCOCK VPL</span>
+            <span className="font-bold text-xl tracking-tight text-foreground">BABCOCK VPL</span>
           </Link>
           <p className="text-sm text-muted-foreground">Sign in to your account</p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-5 sm:p-7 space-y-4 border border-white/10">
+        <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-5 sm:p-7 space-y-4 border border-border">
           <div className="space-y-1.5">
             <Label htmlFor="email" className="text-xs">Email</Label>
             <Input
@@ -58,7 +58,7 @@ const Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="h-11 bg-white/5 border-white/10 focus:border-primary text-sm"
+              className="h-11 bg-muted/50 border-border focus:border-primary text-sm"
             />
           </div>
 
@@ -76,7 +76,7 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="h-11 bg-white/5 border-white/10 focus:border-primary text-sm"
+              className="h-11 bg-muted/50 border-border focus:border-primary text-sm"
             />
           </div>
 
@@ -90,7 +90,7 @@ const Login = () => {
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full h-11 bg-primary text-black font-semibold hover:bg-primary/90 shadow-[0_0_20px_rgba(0,255,255,0.3)]"
+            className="w-full h-11 bg-primary text-primary-foreground font-semibold hover:bg-primary/90 shadow-lg shadow-primary/20"
           >
             {isLoading ? 'Signing in…' : 'Sign In'}
           </Button>
