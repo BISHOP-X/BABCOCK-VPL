@@ -1,12 +1,15 @@
 
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useTheme } from "@/context/ThemeContext";
+import { Sun, Moon } from "lucide-react";
 import heroImage from "@/assets/hero-image.jpg";
 import featureIde from "@/assets/feature-ide.jpg";
 import featureAnalytics from "@/assets/feature-analytics.jpg";
 import featureCompile from "@/assets/feature-compile.jpg";
 
 const LandingPage = () => {
+  const { theme, toggleTheme } = useTheme();
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/30">
       {/* Navigation */}
@@ -18,7 +21,15 @@ const LandingPage = () => {
             </div>
             <span className="font-bold text-xl tracking-tight">BABCOCK VPL</span>
           </div>
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted"
+            >
+              {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </Button>
             <Link to="/login">
               <Button variant="ghost" className="text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted">
                 Sign In
@@ -42,8 +53,8 @@ const LandingPage = () => {
             alt="Virtual Programming Lab Background" 
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
-          <div className="absolute inset-0 bg-foreground/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
+          <div className="absolute inset-0 bg-foreground/5" />
         </div>
 
         {/* Hero Content */}

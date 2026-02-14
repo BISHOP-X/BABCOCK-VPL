@@ -24,10 +24,12 @@ const Navbar = () => {
     ? [
         { label: 'Dashboard', href: '/lecturer' },
         { label: 'Courses', href: '/lecturer' },
+        { label: 'Home', href: '/' },
       ]
     : [
         { label: 'Dashboard', href: '/student' },
         { label: 'Courses', href: '/student' },
+        { label: 'Home', href: '/' },
       ];
 
   const isActive = (href: string) => location.pathname === href;
