@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import { createAssignment } from '@/services/mockApi';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface TaskInput {
   description: string;
@@ -35,9 +37,29 @@ const CreateAssignment = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!courseId) return;
     setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 600));
-    navigate(`/lecturer/courses/${courseId}?tab=assignments`);
+    
+    try {
+      await createAssignment({
+        course_id: courseId,
+        title: form.title,
+        description: form.description,
+        week_number: Number(form.week_number),
+        due_date: form.due_date,
+        tasks: tasks.filter(t => t.description.trim()).map((t, i) => ({
+          id: `task-${i}`,
+          description: t.description,
+          hint: t.hint || undefined,
+        })),
+        expected_output: form.expected_output || undefined,
+      });
+      toast.success('Assignment created successfully!');
+      navigate(`/lecturer/courses/${courseId}?tab=assignments`);
+    } catch (error) {
+      toast.error('Failed to create assignment');
+      setSubmitting(false);
+    }
   };
 
   const valid = form.title.trim() && form.due_date && tasks.some((t) => t.description.trim());

@@ -9,7 +9,9 @@ export type AssignmentStatus = 'not_started' | 'not-started' | 'in_progress' | '
 
 export type EnrollmentStatus = 'active' | 'archived';
 
-export type ProgrammingLanguage = 'python' | 'java' | 'cpp';
+export type ProgrammingLanguage = 'python' | 'java' | 'cpp' | 'html' | 'css' | 'javascript' | 'php';
+
+export type StudentLevel = '100' | '200' | '300' | '400' | '500' | 'phd';
 
 export interface User {
   id: string;
@@ -18,6 +20,7 @@ export interface User {
   role: UserRole;
   matric_number?: string;    // students only
   staff_id?: string;         // lecturers only
+  level?: StudentLevel;      // students only - 100, 200, 300, 400, 500, phd
   department: string;
   avatar_url?: string;
   created_at: string;

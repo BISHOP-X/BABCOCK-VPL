@@ -2,16 +2,20 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { useAuth } from '@/context/useAuth';
+import { createCourse } from '@/services/mockApi';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ArrowLeft, Plus } from 'lucide-react';
+import { toast } from 'sonner';
 import type { ProgrammingLanguage } from '@/types';
 
 const languages: { value: ProgrammingLanguage; label: string }[] = [
   { value: 'python', label: 'Python' },
   { value: 'java', label: 'Java' },
   { value: 'cpp', label: 'C++' },
+  { value: 'html', label: 'HTML/CSS/JavaScript' },
+  { value: 'php', label: 'PHP (LAMP/WAMP)' },
 ];
 
 const CreateCourse = () => {
@@ -31,13 +35,24 @@ const CreateCourse = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) return;
     setSubmitting(true);
 
-    // Simulate creation (mock — no persistence)
-    await new Promise((r) => setTimeout(r, 600));
-
-    // Navigate back to dashboard
-    navigate('/lecturer');
+    try {
+      await createCourse({
+        title: form.title,
+        code: form.code,
+        language: form.language,
+        description: form.description,
+        semester: form.semester,
+        lecturer_id: user.id,
+      });
+      toast.success('Course created successfully!');
+      navigate('/lecturer');
+    } catch (error) {
+      toast.error('Failed to create course');
+      setSubmitting(false);
+    }
   };
 
   const valid = form.title.trim() && form.code.trim() && form.description.trim();

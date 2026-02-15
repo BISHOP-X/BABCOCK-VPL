@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Link, useParams } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Play, Send, ChevronLeft, Terminal as TerminalIcon, CheckCircle2, Loader2, FileText, Code2, Monitor } from "lucide-react";
+import { Play, Send, ChevronLeft, Terminal as TerminalIcon, CheckCircle2, Loader2, FileText, Code2, Monitor, StickyNote } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import Editor from "@monaco-editor/react";
 import { useAuth } from "@/context/useAuth";
@@ -19,7 +19,7 @@ const starterCode: Record<string, string> = {
   cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n    // Write your solution here\n    return 0;\n}\n',
 };
 
-type MobileTab = 'instructions' | 'editor' | 'output';
+type MobileTab = 'instructions' | 'editor' | 'output' | 'notes';
 
 const VirtualLab = () => {
   const { courseId, assignmentId } = useParams();
@@ -35,6 +35,7 @@ const VirtualLab = () => {
   const [submitted, setSubmitted] = useState(false);
   const [existingSub, setExistingSub] = useState<Submission | null>(null);
   const [mobileTab, setMobileTab] = useState<MobileTab>('editor');
+  const [notes, setNotes] = useState('');
 
   // Load assignment + course data
   useEffect(() => {
@@ -104,6 +105,7 @@ const VirtualLab = () => {
     { key: 'instructions', label: 'Tasks', icon: FileText },
     { key: 'editor', label: 'Code', icon: Code2 },
     { key: 'output', label: 'Output', icon: Monitor },
+    { key: 'notes', label: 'Notes', icon: StickyNote },
   ];
 
   /* ====== Shared sub-components ====== */
@@ -282,6 +284,20 @@ const VirtualLab = () => {
           )}
           {mobileTab === 'output' && (
             <TerminalPanel className="h-full" />
+          )}
+          {mobileTab === 'notes' && (
+            <div className="flex-1 flex flex-col h-full bg-card">
+              <div className="px-3 py-2 border-b border-border flex items-center gap-2">
+                <StickyNote className="w-3.5 h-3.5 text-primary" />
+                <span className="text-xs font-semibold text-foreground">Notes & Scratchpad</span>
+              </div>
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Write your notes here... (private, not submitted)"
+                className="flex-1 p-3 text-xs text-foreground bg-background border-none resize-none focus:outline-none font-mono leading-relaxed"
+              />
+            </div>
           )}
         </div>
       </div>

@@ -12,9 +12,21 @@ const langColor: Record<string, string> = {
   python: 'from-yellow-500/20 to-yellow-700/10 border-yellow-500/30',
   java: 'from-orange-500/20 to-orange-700/10 border-orange-500/30',
   cpp: 'from-blue-500/20 to-blue-700/10 border-blue-500/30',
+  html: 'from-red-500/20 to-red-700/10 border-red-500/30',
+  css: 'from-blue-400/20 to-blue-600/10 border-blue-400/30',
+  javascript: 'from-yellow-400/20 to-yellow-600/10 border-yellow-400/30',
+  php: 'from-purple-500/20 to-purple-700/10 border-purple-500/30',
 };
 
-const langIcon: Record<string, string> = { python: 'PY', java: 'JV', cpp: 'C++' };
+const langIcon: Record<string, string> = { 
+  python: 'PY', 
+  java: 'JV', 
+  cpp: 'C++', 
+  html: 'HTML', 
+  css: 'CSS', 
+  javascript: 'JS', 
+  php: 'PHP' 
+};
 
 const StudentDashboard = () => {
   const { user } = useAuth();
@@ -56,11 +68,18 @@ const StudentDashboard = () => {
       <header className="border-b border-border bg-card/30">
         <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
           <h1 className="text-2xl sm:text-3xl font-bold">Welcome back, {firstName}</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            {totalPending > 0
-              ? `You have ${totalPending} pending assignment${totalPending > 1 ? 's' : ''}.`
-              : 'All caught up — no pending assignments!'}
-          </p>
+          <div className="flex items-center gap-3 mt-1">
+            <p className="text-sm text-muted-foreground">
+              {totalPending > 0
+                ? `You have ${totalPending} pending assignment${totalPending > 1 ? 's' : ''}.`
+                : 'All caught up — no pending assignments!'}
+            </p>
+            {user?.level && (
+              <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20 text-primary font-medium">
+                {user.level === 'phd' ? 'PhD' : `${user.level} Level`}
+              </span>
+            )}
+          </div>
 
           {/* Quick stats */}
           <div className="flex items-center gap-4 mt-4">
