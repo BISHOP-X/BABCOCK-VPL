@@ -51,4 +51,14 @@ export const mockCourses: Course[] = [
     lecturer_id: 'lec-002',
     created_at: '2025-08-15T08:00:00Z',
   },
+  {
+    id: 'crs-c201',
+    title: 'Introduction to C Programming',
+    code: 'CS201',
+    language: 'c',
+    description: 'Fundamental C programming course covering variables, data types, pointers, memory management, file I/O, and structured programming techniques.',
+    semester: '2025/2026 - First Semester',
+    lecturer_id: 'lec-001',
+    created_at: '2025-08-15T08:00:00Z',
+  },
 ];

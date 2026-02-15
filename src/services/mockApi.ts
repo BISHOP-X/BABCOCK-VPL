@@ -33,7 +33,7 @@ import {
 
 // ---------- LocalStorage Persistence Layer ----------
 // Bump DATA_VERSION any time the seed data changes (new courses, assignments, etc.)
-const DATA_VERSION = '2';
+const DATA_VERSION = '3';
 const STORAGE_KEYS = {
   VERSION: 'babcock_vpl_data_version',
   COURSES: 'babcock_vpl_courses',

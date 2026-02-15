@@ -20,6 +20,7 @@ const langColor: Record<string, string> = {
   python: 'text-yellow-500 dark:text-yellow-400 bg-yellow-400/10 border-yellow-400/20',
   java: 'text-orange-500 dark:text-orange-400 bg-orange-400/10 border-orange-400/20',
   cpp: 'text-blue-500 dark:text-blue-400 bg-blue-400/10 border-blue-400/20',
+  c: 'text-indigo-500 dark:text-indigo-400 bg-indigo-400/10 border-indigo-400/20',
   html: 'text-red-500 dark:text-red-400 bg-red-400/10 border-red-400/20',
   css: 'text-blue-400 dark:text-blue-300 bg-blue-300/10 border-blue-300/20',
   javascript: 'text-yellow-400 dark:text-yellow-300 bg-yellow-300/10 border-yellow-300/20',

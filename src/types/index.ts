@@ -9,7 +9,7 @@ export type AssignmentStatus = 'not_started' | 'not-started' | 'in_progress' | '
 
 export type EnrollmentStatus = 'active' | 'archived';
 
-export type ProgrammingLanguage = 'python' | 'java' | 'cpp' | 'html' | 'css' | 'javascript' | 'php';
+export type ProgrammingLanguage = 'python' | 'java' | 'cpp' | 'c' | 'html' | 'css' | 'javascript' | 'php';
 
 export type StudentLevel = '100' | '200' | '300' | '400' | '500' | 'phd';
 

@@ -14,6 +14,7 @@ const languages: { value: ProgrammingLanguage; label: string }[] = [
   { value: 'python', label: 'Python' },
   { value: 'java', label: 'Java' },
   { value: 'cpp', label: 'C++' },
+  { value: 'c', label: 'C' },
   { value: 'html', label: 'HTML/CSS/JavaScript' },
   { value: 'php', label: 'PHP (LAMP/WAMP)' },
 ];
