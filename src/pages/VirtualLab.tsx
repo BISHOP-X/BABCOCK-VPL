@@ -11,12 +11,24 @@ import { getAssignmentById, getCourseById, submitCode as mockSubmit, getSubmissi
 import type { Assignment, CourseWithLecturer, Submission } from "@/types";
 import { toast } from "sonner";
 
-const langMap: Record<string, string> = { python: 'python', java: 'java', cpp: 'cpp' };
+const langMap: Record<string, string> = {
+  python: 'python',
+  java: 'java',
+  cpp: 'cpp',
+  html: 'html',
+  css: 'css',
+  javascript: 'javascript',
+  php: 'php',
+};
 
 const starterCode: Record<string, string> = {
   python: '# Write your solution here\n\n',
   java: 'public class Solution {\n    public static void main(String[] args) {\n        // Write your solution here\n    }\n}\n',
   cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n    // Write your solution here\n    return 0;\n}\n',
+  html: '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>My Page</title>\n  <style>\n    /* Write your CSS here */\n  </style>\n</head>\n<body>\n  <!-- Write your HTML here -->\n\n  <script>\n    // Write your JavaScript here\n  </script>\n</body>\n</html>\n',
+  css: '/* Write your CSS styles here */\n\nbody {\n  margin: 0;\n  padding: 20px;\n  font-family: Arial, sans-serif;\n}\n',
+  javascript: '// Write your JavaScript solution here\n\nconsole.log("Hello World!");\n',
+  php: '<?php\n// Write your PHP solution here\n\necho "Hello World!";\n?>\n',
 };
 
 type MobileTab = 'instructions' | 'editor' | 'output' | 'notes';
@@ -99,7 +111,16 @@ const VirtualLab = () => {
     toast.success('Code submitted successfully!');
   }, [submitting, submitted, user, assignmentId, code, lang, output]);
 
-  const fileName = lang === 'python' ? 'main.py' : lang === 'java' ? 'Solution.java' : 'main.cpp';
+  const fileNameMap: Record<string, string> = {
+    python: 'main.py',
+    java: 'Solution.java',
+    cpp: 'main.cpp',
+    html: 'index.html',
+    css: 'styles.css',
+    javascript: 'script.js',
+    php: 'index.php',
+  };
+  const fileName = fileNameMap[lang] ?? 'main.txt';
 
   const mobileTabs: { key: MobileTab; label: string; icon: typeof Code2 }[] = [
     { key: 'instructions', label: 'Tasks', icon: FileText },

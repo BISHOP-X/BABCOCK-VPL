@@ -32,7 +32,10 @@ import {
 } from '@/data';
 
 // ---------- LocalStorage Persistence Layer ----------
+// Bump DATA_VERSION any time the seed data changes (new courses, assignments, etc.)
+const DATA_VERSION = '2';
 const STORAGE_KEYS = {
+  VERSION: 'babcock_vpl_data_version',
   COURSES: 'babcock_vpl_courses',
   ENROLLMENTS: 'babcock_vpl_enrollments',
   ASSIGNMENTS: 'babcock_vpl_assignments',
@@ -57,14 +60,17 @@ function saveToStorage<T>(key: string, data: T[]): void {
   }
 }
 
-// Initialize storage with mock data on first load
+// Initialize storage with mock data on first load OR when DATA_VERSION changes
 function initializeStorage() {
-  if (!localStorage.getItem(STORAGE_KEYS.COURSES)) {
+  const storedVersion = localStorage.getItem(STORAGE_KEYS.VERSION);
+  if (!storedVersion || storedVersion !== DATA_VERSION) {
+    // New visit or data version changed — reseed everything
     saveToStorage(STORAGE_KEYS.COURSES, initialMockCourses);
     saveToStorage(STORAGE_KEYS.ENROLLMENTS, initialMockEnrollments);
     saveToStorage(STORAGE_KEYS.ASSIGNMENTS, initialMockAssignments);
     saveToStorage(STORAGE_KEYS.SUBMISSIONS, initialMockSubmissions);
     saveToStorage(STORAGE_KEYS.GRADES, initialMockGrades);
+    localStorage.setItem(STORAGE_KEYS.VERSION, DATA_VERSION);
   }
 }
 

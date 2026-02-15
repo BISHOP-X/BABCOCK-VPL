@@ -6,6 +6,7 @@ export const mockEnrollments: Enrollment[] = [
   { id: 'enr-002', student_id: 'stu-001', course_id: 'crs-cs202', status: 'active', enrolled_at: '2025-09-05T08:00:00Z' },
   { id: 'enr-003', student_id: 'stu-001', course_id: 'crs-cs303', status: 'active', enrolled_at: '2025-09-05T08:00:00Z' },
   { id: 'enr-013', student_id: 'stu-001', course_id: 'crs-web101', status: 'active', enrolled_at: '2025-09-05T08:00:00Z' },
+  { id: 'enr-017', student_id: 'stu-001', course_id: 'crs-php501', status: 'active', enrolled_at: '2025-09-05T08:00:00Z' },
 
   // Emma Wilson — enrolled in Python, Java & Web Design (200 level)
   { id: 'enr-004', student_id: 'stu-002', course_id: 'crs-cs101', status: 'active', enrolled_at: '2025-09-05T08:00:00Z' },
