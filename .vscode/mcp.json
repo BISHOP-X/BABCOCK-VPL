@@ -12,9 +12,9 @@
         "-y",
         "@supabase/mcp-server-supabase@latest",
         "--access-token",
-        "sbp_66dbe396c3b57d36d505f51acd8571fb3fcd38fd",
+        "sbp_b8736b6be4f39809c213df157d5f1c787f47fc90",
         "--project-ref",
-        "gitpxxpkbfeorydstilz"
+        "ckrzdghuipfkdifafmqz"
       ]
     },
 
