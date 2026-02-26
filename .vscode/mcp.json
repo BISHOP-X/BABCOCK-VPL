@@ -1,12 +1,21 @@
 {
-  // MCP Servers for Virtual Programming Lab
+  // MCP Servers for BABCOCK VPL
   // Use Ctrl+Shift+I to open Chat, click "Start" above each server to activate
-  
+
   "servers": {
-    // Supabase — DB queries, migrations, TypeScript types, Edge Functions, logs
+    // Supabase — project: BABCOCK VPL (gitpxxpkbfeorydstilz)
+    // DB queries, migrations, TypeScript types, Edge Functions, auth, logs
     "supabase": {
-      "type": "http",
-      "url": "https://mcp.supabase.com/mcp"
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--access-token",
+        "sbp_66dbe396c3b57d36d505f51acd8571fb3fcd38fd",
+        "--project-ref",
+        "gitpxxpkbfeorydstilz"
+      ]
     },
 
     // Context7 — Live docs for React, TypeScript, Tailwind (prevents outdated suggestions)
@@ -21,6 +30,13 @@
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+
+    // Chrome DevTools — Inspect browser state, console, network, DOM
+    "chrome-devtools": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest"]
     }
   }
 }
