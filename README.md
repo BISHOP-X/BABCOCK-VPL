@@ -149,32 +149,26 @@ Build a complete Virtual Programming Lab platform that eliminates the need for l
 
 ---
 
-### 🚧 Pending Implementation (Phase 2)
+### 🚧 Phase 2 — Backend Integration (Current)
 
-#### Backend Integration
-- ⏳ Supabase setup and configuration
-- ⏳ PostgreSQL database schema
+#### MVP Backend (In Progress)
+- ⏳ Supabase database tables (profiles, courses, enrollments, assignments, submissions, grades)
 - ⏳ Row Level Security (RLS) policies
-- ⏳ Supabase Auth integration
-- ⏳ Real-time subscriptions for live updates
-- ⏳ Edge Functions for business logic
+- ⏳ Supabase Auth (email/password signup + login)
+- ⏳ Profile auto-creation via database trigger
+- ⏳ Replace mockApi.ts with supabaseApi.ts
+- ⏳ Seed demo data (courses, assignments, users)
 
 #### Code Execution Engine
-- ⏳ Docker containerization for secure code execution
-- ⏳ Language runtime environments (Python, Java, C++, C, PHP)
-- ⏳ Input/output handling
-- ⏳ Execution timeouts and resource limits
-- ⏳ Error handling and stack traces
-- ⏳ Test case validation
+- ⏳ Supabase Edge Function proxy to Judge0 or Piston API
+- ⏳ Real compilation for Python, Java, C, C++
+- ⏳ Output capture and error handling
 
-#### Advanced Features
-- ⏳ Real-time code collaboration
-- ⏳ Automated test case evaluation
-- ⏳ Plagiarism detection
-- ⏳ Advanced analytics dashboard
+#### Stretch Goals (Post-MVP)
+- ⏳ Real-time subscriptions for live submission updates
+- ⏳ Student enrollment by course code
 - ⏳ Email notifications
-- ⏳ File upload for assignments
-- ⏳ PDF report generation
+- ⏳ Advanced analytics dashboard
 - ⏳ Bulk grading interface
 
 ---
@@ -455,7 +449,7 @@ This project includes Model Context Protocol (MCP) servers for enhanced AI-assis
 1. **Supabase MCP** - Database queries, migrations, TypeScript types, logs
 2. **Context7 MCP** - Live documentation for React, TypeScript, Tailwind CSS
 3. **Sequential Thinking MCP** - Enhanced reasoning for complex tasks
-4. **Prisma MCP** - Database schema management and migrations
+4. **Chrome DevTools MCP** - Browser inspection, screenshots, console/network monitoring
 
 **Setup:** See [.vscode/mcp.json](.vscode/mcp.json) for configuration
 

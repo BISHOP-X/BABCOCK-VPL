@@ -2,454 +2,340 @@
 
 ## Philosophy
 
-> **UI-First, Backend-Second.**
-> Complete every screen, every interaction, every user flow in the frontend with realistic mock data and proper component architecture. Only after the UI is bulletproof do we wire up Supabase, Auth, and the code execution engine. This ensures the HOD sees a polished product at every stage, and we never build backend for screens that don't exist yet.
+> **UI-First, Backend-Second. MVP at every step.**
+> Phase 1 (complete) built every screen, every interaction, every user flow with realistic mock data. Phase 2 replaces the mock layer with a real Supabase backend — one migration at a time, always keeping the app working. Ship small, verify, repeat.
 
 ---
 
-## Phase 1: UI Completion & Alignment (CURRENT PHASE)
+## Phase 1: Frontend UI ✅ COMPLETE
 
-Everything below must be built, fixed, or aligned before any backend work begins.
+All Phase 1 work was completed and pushed. Summary of what was built:
 
----
+- [x] **1.1** Landing page cleanup — removed off-point text, VPL branding
+- [x] **1.2** Auth pages — Login (with role toggle), Signup, Forgot Password, ProtectedRoute, AuthContext
+- [x] **1.3** Student features — Dashboard, CourseDetail, SubmissionView, grades display
+- [x] **1.4** Virtual Lab — Monaco Editor, 8 programming languages, Run/Submit, Notes tab, mobile tabs
+- [x] **1.5** Lecturer features — Dashboard, CourseManagement, CreateCourse, CreateAssignment, CodeReview
+- [x] **1.6** Shared components — Navbar (role-aware), theme system (light/dark), toast notifications
+- [x] **1.7** Mock data layer — Types (1:1 Supabase mapping), 6 mock data files, mockApi.ts (20+ functions), localStorage persistence with DATA_VERSION
+- [x] **1.8** Route map — All 14 pages wired, role-based guards active
+- [x] **HOD feedback** — Web Design course, PHP course, C language, student levels, browser notepad
+- [x] **Documentation** — README, PLAN.md, copilot-instructions.md, MCP servers configured
 
-### 1.1 — Fix Off-Point Content (Landing Page Cleanup)
+**14 pages:** Index, Login, Signup, ForgotPassword, StudentDashboard, CourseDetail, VirtualLab, SubmissionView, LecturerDashboard, LecturerCourseManagement, CreateCourse, CreateAssignment, CodeReview, NotFound
 
-**Problem:** The landing page overpromises features that are out of scope for MVP.
+**6 courses:** CS101 (Python), CS202 (Java), CS303 (C++), CS201 (C), WEB101 (HTML), PHP501 (PHP)
 
-| What | Fix |
-|---|---|
-| "Automated plagiarism detection" text | Replace with "Assignment submission tracking and grade management" |
-| "Isolated secure containers" text | Replace with "Cloud-based code compilation for Python, Java, and C++" |
-| "v2.0 System Online" badge | Change to "VPL System Online" or "Beta" — drop the version number |
-| "Deep Analytics" feature card description | Rewrite to focus on submission tracking, grading overview, and class progress — not advanced code analysis |
-| "Code quality metrics" text | Replace with "Submission history and performance tracking" |
-
-**Files:** `src/pages/Index.tsx`
-
----
-
-### 1.2 — Authentication Pages (Login, Signup, Role Selection)
-
-**Problem:** No auth screens exist. Student is hardcoded as "Alex Chen", lecturer as "Prof. Anderson". Anyone can access any route.
-
-**Build:**
-
-- [ ] **`/login` — Login Page**
-  - Email + password fields
-  - "Login" button
-  - Link to signup
-  - Clean, cinematic design matching existing theme
-  - Role indicator after login (student vs lecturer) — redirects accordingly
-
-- [ ] **`/signup` — Signup Page**
-  - Full name, email, password, confirm password
-  - Role selector: Student or Lecturer
-  - For students: Matric number field
-  - For lecturers: Staff ID / department field
-  - "Create Account" button
-  - Link back to login
-
-- [ ] **`/forgot-password` — Forgot Password Page**
-  - Email field + "Send Reset Link" button
-  - Confirmation message UI
-
-- [ ] **Role-based route guards (UI only for now)**
-  - Create a `ProtectedRoute` wrapper component
-  - If "not logged in" (mock state), redirect to `/login`
-  - If student tries `/lecturer`, redirect to `/student`
-  - If lecturer tries `/student`, redirect to `/lecturer`
-  - Use React Context or Zustand for mock auth state
-
-**Files to create:**
-- `src/pages/Login.tsx`
-- `src/pages/Signup.tsx`
-- `src/pages/ForgotPassword.tsx`
-- `src/components/ProtectedRoute.tsx`
-- `src/context/AuthContext.tsx` (mock auth state)
-
-**Update:** `src/App.tsx` — add new routes, wrap dashboard routes with `ProtectedRoute`
+**21 assignments** across all courses | **6 mock users** (4 students + 2 lecturers)
 
 ---
 
-### 1.3 — Student Dashboard Overhaul
+## Phase 2: Supabase Backend Integration (CURRENT PHASE)
 
-**Problem:** Current dashboard shows courses with progress bars but has no view for past submissions, grades, or feedback. The entire student workflow stops at "click course card → go to lab."
+> **MVP approach:** Replace mock data with real Supabase tables. One migration at a time. Keep the app working after every step. No big-bang rewrites.
 
-**Build:**
-
-- [ ] **Enrolled courses list** (keep existing, but make data-driven via mock)
-  - Each course card shows: course name, lecturer name, language, weekly assignment title, due date
-  - Click → navigates to either the assignment list or directly to the lab
-
-- [ ] **`/student/courses/:courseId` — Course Detail Page**
-  - Course header (title, lecturer, language icon)
-  - Weekly assignment list (Week 1, Week 2, etc.)
-  - Each assignment row shows: title, status (Not Started / In Progress / Submitted / Graded), due date, grade if graded
-  - Click an assignment → opens the Virtual Lab for that assignment
-  - Past submissions section: shows submitted code snapshot (read-only), output, timestamp, grade, lecturer feedback
-
-- [ ] **Grades & Feedback Tab/Section**
-  - Summary of all graded assignments across all courses
-  - Table: Course → Assignment → Grade → Feedback preview
-  - Click to expand full feedback
-
-- [ ] **Student Profile Header**
-  - Replace hardcoded "Alex Chen" with dynamic mock user
-  - Show: name, matric number, department, enrolled courses count
-  - Avatar placeholder
-
-**Files to create:**
-- `src/pages/CourseDetail.tsx` (student view)
-- `src/pages/SubmissionView.tsx` (read-only view of a past submission)
-
-**Update:** `src/pages/StudentDashboard.tsx`, `src/App.tsx`
-
----
-
-### 1.4 — Virtual Lab (Code Editor) Overhaul
-
-**Problem:** The current "editor" is a `contentEditable` div with fake syntax highlighting. There's no real code editing, no Submit button, no language switching. This is the core of the entire product.
-
-**Build:**
-
-- [ ] **Replace contentEditable with Monaco Editor**
-  - Install `@monaco-editor/react`
-  - Full syntax highlighting for Python, Java, C/C++
-  - Line numbers, bracket matching, autocomplete
-  - Dark theme matching VPL aesthetic
-  - Language auto-detected from course/assignment context
-
-- [ ] **Language selector dropdown**
-  - Show current language (Python/Java/C++)
-  - Locked to the assignment's language (not free-choice for MVP)
-
-- [ ] **Instructions panel (left sidebar) — improve**
-  - Already exists but needs structure: Assignment title, description, task breakdown, expected output examples
-  - Mark tasks as complete (UI only)
-
-- [ ] **"Run Code" button — keep but clarify it's mock for now**
-  - Show realistic mock output based on language
-  - Simulated "compiling..." → "running..." → output sequence with loading states
-  - Error output simulation (syntax error example)
-
-- [ ] **"Submit" button — NEW, CRITICAL**
-  - Prominent button alongside Run
-  - Confirmation dialog: "Submit your code? This creates an immutable snapshot that will be sent to your lecturer."
-  - On confirm: show success toast with timestamp
-  - After submission: code becomes read-only with a "Submitted" badge
-  - Mock: store submission in local state
-
-- [ ] **File tabs (stretch)**
-  - For now, single file per assignment is fine
-  - Tab shows filename (e.g., `main.py`, `Solution.java`)
-
-- [ ] **Terminal panel improvements**
-  - Clear terminal button
-  - Timestamp on each output line
-  - Differentiate stdout (white), stderr (red), system messages (blue)
-
-**Files to update:** `src/pages/VirtualLab.tsx`
-**Packages to install:** `@monaco-editor/react`
-
----
-
-### 1.5 — Lecturer Dashboard Overhaul
-
-**Problem:** Current dashboard is a single flat view with one hardcoded course's submissions table. Lecturers need to manage multiple courses, create assignments, review code, and provide grades + feedback.
-
-**Build:**
-
-- [ ] **Multi-course view**
-  - Lecturer sees all their courses as cards/list
-  - Each course shows: title, language, student count, latest assignment, submission rate
-  - Click course → course management view
-
-- [ ] **`/lecturer/courses/:courseId` — Course Management Page**
-  - Course header with stats
-  - **Assignments tab:** List of weekly assignments with create/edit UI
-  - **Students tab:** Enrolled students list with enrollment management
-  - **Submissions tab:** All submissions for this course, filterable by assignment/student
-
-- [ ] **Create Assignment Modal/Page**
-  - Title, description, language (auto from course), due date picker
-  - Task breakdown (add multiple task items)
-  - Expected output (optional)
-  - "Publish Assignment" button
-
-- [ ] **Create Course Modal/Page**
-  - Course title, language (Python/Java/C++), description, semester
-  - "Create Course" button
-
-- [ ] **Student Enrollment Management**
-  - Add students to course (search by name/matric)
-  - Remove/archive students ("Graduated Clause" from CONTEXT.md)
-  - Bulk enrollment option
-
-- [ ] **`/lecturer/review/:submissionId` — Code Review Page**
-  - Student's submitted code in read-only Monaco Editor
-  - Terminal output panel showing their execution result
-  - Submission metadata: student name, timestamp, assignment title
-  - **Grading panel:**
-    - Score input (0-100)
-    - Feedback text area (rich text or plain)
-    - "Submit Grade" button
-  - Navigation: Previous/Next submission buttons
-
-- [ ] **Lecturer Profile Header**
-  - Replace hardcoded "Prof. Anderson" with dynamic mock user
-  - Show: name, staff ID, department, courses count
-
-**Files to create:**
-- `src/pages/LecturerCourseManagement.tsx`
-- `src/pages/CreateAssignment.tsx` (or modal component)
-- `src/pages/CreateCourse.tsx` (or modal component)
-- `src/pages/CodeReview.tsx`
-- `src/components/EnrollmentManager.tsx`
-
-**Update:** `src/pages/LecturerDashboard.tsx`, `src/App.tsx`
-
----
-
-### 1.6 — Shared Components & Layout
-
-**Build:**
-
-- [ ] **Shared navigation component**
-  - Consistent nav bar across all pages
-  - Dynamic based on role (student nav vs lecturer nav)
-  - Mobile hamburger menu
-  - Logout button (mock: clears auth state, redirects to `/login`)
-
-- [ ] **Breadcrumb navigation**
-  - Dashboard → Course → Assignment → Lab
-  - Helps users understand where they are
-
-- [ ] **Loading states**
-  - Skeleton screens for dashboards
-  - Spinner for code execution
-  - Progress indicators for submission
-
-- [ ] **Empty states**
-  - "No courses enrolled" for students
-  - "No assignments yet" for courses
-  - "No submissions received" for lecturers
-
-- [ ] **Error states**
-  - 404 page (already exists, improve it)
-  - "Access denied" for wrong role
-  - "Session expired" prompt
-
-- [ ] **Toast notifications system**
-  - Already have Sonner/Toaster installed
-  - Define consistent toast patterns: success, error, info, warning
-
-**Files to create:**
-- `src/components/Navbar.tsx`
-- `src/components/Breadcrumbs.tsx`
-- `src/components/LoadingSkeleton.tsx`
-- `src/components/EmptyState.tsx`
-
----
-
-### 1.7 — Mock Data Architecture
-
-**Problem:** All data is currently inline hardcoded in components. Before backend, we need a clean mock data layer that mirrors the eventual Supabase schema.
-
-**Build:**
-
-- [ ] **Mock data files matching Supabase schema**
-  - `src/data/mockUsers.ts` — students and lecturers with roles
-  - `src/data/mockCourses.ts` — courses with language, lecturer, semester
-  - `src/data/mockEnrollments.ts` — student-course relationships
-  - `src/data/mockAssignments.ts` — weekly tasks per course
-  - `src/data/mockSubmissions.ts` — code snapshots with output, timestamps
-  - `src/data/mockGrades.ts` — scores and feedback
-
-- [ ] **Mock data service layer**
-  - `src/services/mockApi.ts` — functions like `getCourses()`, `getSubmissions()`, `submitCode()`, `gradeSubmission()`
-  - Simulate async behavior with `setTimeout` or `Promise.resolve`
-  - When we switch to Supabase, we only need to swap this one file
-
-- [ ] **Type definitions**
-  - `src/types/index.ts` — TypeScript interfaces for User, Course, Enrollment, Assignment, Submission, Grade
-  - These types will map 1:1 to Supabase tables later
-
-**Files to create:**
-- `src/types/index.ts`
-- `src/data/mockUsers.ts`
-- `src/data/mockCourses.ts`
-- `src/data/mockEnrollments.ts`
-- `src/data/mockAssignments.ts`
-- `src/data/mockSubmissions.ts`
-- `src/data/mockGrades.ts`
-- `src/services/mockApi.ts`
-
----
-
-### 1.8 — Route Map (Final)
-
-After Phase 1 is complete, the full route structure should be:
+### Architecture Overview
 
 ```
-/                           → Landing page
-/login                      → Login page
-/signup                     → Signup page
-/forgot-password            → Password reset page
+Frontend (React)  →  supabaseApi.ts  →  Supabase (Postgres + Auth + RLS)
+     ↓                                        ↓
+  Monaco Editor  →  Edge Function  →  Judge0/Piston (code execution)
+```
 
-/student                    → Student dashboard (courses overview)
-/student/courses/:courseId  → Course detail (assignments list, grades)
-/student/submission/:id     → View past submission (read-only)
+**Key principle:** `mockApi.ts` has 20+ async functions. We create `supabaseApi.ts` with the same function signatures and swap the import. Pages don't change.
 
-/lab/:courseId/:assignmentId → Virtual Lab (Monaco editor + terminal)
+---
 
-/lecturer                   → Lecturer dashboard (courses overview)
-/lecturer/courses/:courseId → Course management (assignments, students, submissions)
-/lecturer/create-course     → Create new course
-/lecturer/review/:submissionId → Code review + grading page
+### 2.1 — Database Schema (Migrations)
+
+Apply these via `mcp_supabase_apply_migration` in order. Each migration is verified with a SELECT before moving on.
+
+#### Migration 1: Core Tables
+
+```sql
+-- profiles (extends Supabase auth.users)
+CREATE TABLE public.profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  email TEXT NOT NULL,
+  full_name TEXT NOT NULL,
+  role TEXT NOT NULL CHECK (role IN ('student', 'lecturer')),
+  matric_number TEXT,
+  staff_id TEXT,
+  level TEXT CHECK (level IN ('100', '200', '300', '400', '500', 'phd')),
+  department TEXT NOT NULL DEFAULT 'Computer Science',
+  avatar_url TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- courses
+CREATE TABLE public.courses (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  code TEXT NOT NULL UNIQUE,
+  language TEXT NOT NULL CHECK (language IN ('python', 'java', 'cpp', 'c', 'html', 'css', 'javascript', 'php')),
+  description TEXT NOT NULL DEFAULT '',
+  semester TEXT NOT NULL DEFAULT '2025/2026 - First Semester',
+  lecturer_id UUID NOT NULL REFERENCES public.profiles(id),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- enrollments
+CREATE TABLE public.enrollments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  student_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  course_id UUID NOT NULL REFERENCES public.courses(id) ON DELETE CASCADE,
+  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'archived')),
+  enrolled_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE(student_id, course_id)
+);
+```
+
+#### Migration 2: Assignments & Submissions
+
+```sql
+-- assignments
+CREATE TABLE public.assignments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  course_id UUID NOT NULL REFERENCES public.courses(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  description TEXT NOT NULL DEFAULT '',
+  week_number INTEGER NOT NULL,
+  due_date TIMESTAMPTZ NOT NULL,
+  tasks JSONB NOT NULL DEFAULT '[]',
+  expected_output TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- submissions
+CREATE TABLE public.submissions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  assignment_id UUID NOT NULL REFERENCES public.assignments(id) ON DELETE CASCADE,
+  student_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  code TEXT NOT NULL,
+  language TEXT NOT NULL,
+  output TEXT NOT NULL DEFAULT '',
+  submitted_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE(assignment_id, student_id)
+);
+
+-- grades
+CREATE TABLE public.grades (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  submission_id UUID NOT NULL REFERENCES public.submissions(id) ON DELETE CASCADE UNIQUE,
+  score INTEGER NOT NULL CHECK (score >= 0 AND score <= 100),
+  feedback TEXT NOT NULL DEFAULT '',
+  graded_by UUID NOT NULL REFERENCES public.profiles(id),
+  graded_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+```
+
+#### Migration 3: Row Level Security
+
+```sql
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.courses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.enrollments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.assignments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.submissions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.grades ENABLE ROW LEVEL SECURITY;
+
+-- Profiles: users can read all profiles, update only their own
+CREATE POLICY "Anyone can read profiles" ON public.profiles FOR SELECT USING (true);
+CREATE POLICY "Users can update own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id);
+CREATE POLICY "Users can insert own profile" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
+
+-- Courses: anyone can read, lecturers can create/update their own
+CREATE POLICY "Anyone can read courses" ON public.courses FOR SELECT USING (true);
+CREATE POLICY "Lecturers can create courses" ON public.courses FOR INSERT WITH CHECK (
+  EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'lecturer')
+);
+CREATE POLICY "Lecturers can update own courses" ON public.courses FOR UPDATE USING (lecturer_id = auth.uid());
+
+-- Enrollments: students see their own, lecturers see their courses' enrollments
+CREATE POLICY "Students see own enrollments" ON public.enrollments FOR SELECT USING (student_id = auth.uid());
+CREATE POLICY "Lecturers see course enrollments" ON public.enrollments FOR SELECT USING (
+  EXISTS (SELECT 1 FROM public.courses WHERE id = course_id AND lecturer_id = auth.uid())
+);
+CREATE POLICY "Students can enroll themselves" ON public.enrollments FOR INSERT WITH CHECK (student_id = auth.uid());
+
+-- Assignments: readable by enrolled students + course lecturer
+CREATE POLICY "Anyone can read assignments" ON public.assignments FOR SELECT USING (true);
+CREATE POLICY "Lecturers can create assignments" ON public.assignments FOR INSERT WITH CHECK (
+  EXISTS (SELECT 1 FROM public.courses WHERE id = course_id AND lecturer_id = auth.uid())
+);
+CREATE POLICY "Lecturers can update own assignments" ON public.assignments FOR UPDATE USING (
+  EXISTS (SELECT 1 FROM public.courses WHERE id = course_id AND lecturer_id = auth.uid())
+);
+
+-- Submissions: students see own, lecturers see their courses
+CREATE POLICY "Students see own submissions" ON public.submissions FOR SELECT USING (student_id = auth.uid());
+CREATE POLICY "Lecturers see course submissions" ON public.submissions FOR SELECT USING (
+  EXISTS (
+    SELECT 1 FROM public.assignments a
+    JOIN public.courses c ON c.id = a.course_id
+    WHERE a.id = assignment_id AND c.lecturer_id = auth.uid()
+  )
+);
+CREATE POLICY "Students can submit" ON public.submissions FOR INSERT WITH CHECK (student_id = auth.uid());
+
+-- Grades: students see own, lecturers manage
+CREATE POLICY "Students see own grades" ON public.grades FOR SELECT USING (
+  EXISTS (SELECT 1 FROM public.submissions WHERE id = submission_id AND student_id = auth.uid())
+);
+CREATE POLICY "Lecturers see grades for their courses" ON public.grades FOR SELECT USING (
+  EXISTS (
+    SELECT 1 FROM public.submissions s
+    JOIN public.assignments a ON a.id = s.assignment_id
+    JOIN public.courses c ON c.id = a.course_id
+    WHERE s.id = submission_id AND c.lecturer_id = auth.uid()
+  )
+);
+CREATE POLICY "Lecturers can grade" ON public.grades FOR INSERT WITH CHECK (graded_by = auth.uid());
+CREATE POLICY "Lecturers can update grades" ON public.grades FOR UPDATE USING (graded_by = auth.uid());
+```
+
+#### Migration 4: Profile Trigger (auto-create on signup)
+
+```sql
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, email, full_name, role, matric_number, staff_id, level, department)
+  VALUES (
+    NEW.id,
+    NEW.email,
+    COALESCE(NEW.raw_user_meta_data->>'full_name', ''),
+    COALESCE(NEW.raw_user_meta_data->>'role', 'student'),
+    NEW.raw_user_meta_data->>'matric_number',
+    NEW.raw_user_meta_data->>'staff_id',
+    NEW.raw_user_meta_data->>'level',
+    COALESCE(NEW.raw_user_meta_data->>'department', 'Computer Science')
+  );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 ```
 
 ---
 
-## Phase 2: Backend Integration (AFTER Phase 1)
+### 2.2 — Supabase Client Setup
 
-> Do NOT start this until every screen in Phase 1 is built and polished.
+- [ ] Install `@supabase/supabase-js`
+- [ ] Create `src/lib/supabase.ts` — Supabase client using env vars
+- [ ] Create `src/services/supabaseApi.ts` — same function signatures as `mockApi.ts`
+- [ ] Swap import in each page from `mockApi` → `supabaseApi` (or use an abstraction layer)
 
-### 2.1 — Supabase Setup
-- [ ] Create Supabase project
-- [ ] Design and create database tables:
-  - `profiles` (id, email, full_name, role, matric_number, staff_id, department, avatar_url)
-  - `courses` (id, title, language, description, semester, lecturer_id, created_at)
-  - `enrollments` (id, student_id, course_id, status [active/archived], enrolled_at)
-  - `assignments` (id, course_id, title, description, week_number, due_date, expected_output, created_at)
-  - `submissions` (id, assignment_id, student_id, code, language, output, submitted_at)
-  - `grades` (id, submission_id, score, feedback, graded_by, graded_at)
-- [ ] Set up Row Level Security (RLS) policies
-- [ ] Enable Supabase Auth (email/password)
+---
 
-### 2.2 — Auth Integration
-- [ ] Replace mock auth context with Supabase Auth
-- [ ] Login/Signup pages → real Supabase calls
-- [ ] Session management, role-based redirects
-- [ ] Profile creation on signup (trigger or client-side)
+### 2.3 — Auth Integration
 
-### 2.3 — Data Integration
-- [ ] Replace `src/services/mockApi.ts` with `src/services/supabaseApi.ts`
-- [ ] Wire all pages to real data via React Query
-- [ ] Real-time subscriptions for submission status (optional stretch)
+- [ ] Replace `AuthContext.tsx` mock auth with Supabase Auth
+- [ ] Login page → `supabase.auth.signInWithPassword()`
+- [ ] Signup page → `supabase.auth.signUp()` with metadata (role, name, matric, etc.)
+- [ ] Session listener → `supabase.auth.onAuthStateChange()`
+- [ ] Forgot Password → `supabase.auth.resetPasswordForEmail()`
+- [ ] Profile loaded from `profiles` table after auth state resolves
+- [ ] Seed 2-3 demo accounts (student + lecturer) for testing
 
-### 2.4 — Code Execution Engine
-- [ ] Set up Supabase Edge Function as proxy
-- [ ] Integrate Judge0 API (or Piston API) for Python, Java, C/C++
-- [ ] Wire "Run Code" button to actual compilation
-- [ ] Wire "Submit" button to create immutable submission record
+---
+
+### 2.4 — Data Integration (Page by Page)
+
+Replace each `mockApi` function with a Supabase query. Test after each:
+
+| Function | Supabase Query | Priority |
+|---|---|---|
+| `loginUser` / `signupUser` | Supabase Auth | P0 |
+| `getUserById` | `profiles` SELECT | P0 |
+| `getAllCourses` | `courses` SELECT + join profiles | P0 |
+| `getCourseById` | `courses` SELECT by id | P0 |
+| `getCoursesByLecturer` | `courses` WHERE lecturer_id | P0 |
+| `createCourse` | `courses` INSERT | P1 |
+| `getEnrollmentsForStudent` | `enrollments` + join courses + profiles | P0 |
+| `getStudentsForCourse` | `enrollments` + join profiles WHERE course_id | P1 |
+| `getAssignmentsForCourse` | `assignments` WHERE course_id | P0 |
+| `getAssignmentsWithStatus` | `assignments` + left join submissions + grades | P0 |
+| `getAssignmentById` | `assignments` SELECT by id | P0 |
+| `createAssignment` | `assignments` INSERT | P1 |
+| `getSubmissionsForAssignment` | `submissions` + join profiles WHERE assignment_id | P1 |
+| `getSubmissionByStudentAndAssignment` | `submissions` WHERE student_id AND assignment_id | P1 |
+| `getSubmissionById` | `submissions` + joins | P1 |
+| `submitCode` | `submissions` UPSERT | P1 |
+| `getGradesForStudent` | `grades` + join submissions + assignments | P1 |
+| `gradeSubmission` | `grades` INSERT/UPDATE | P2 |
+| `getCourseStats` | Aggregate query | P2 |
+
+---
+
+### 2.5 — Code Execution Engine (Stretch)
+
+- [ ] Set up Supabase Edge Function as proxy to Judge0 or Piston API
+- [ ] Wire "Run Code" button to real compilation
+- [ ] Support: Python, Java, C, C++ (minimum), HTML/CSS/JS/PHP (stretch)
+- [ ] "Submit" creates immutable record in `submissions` table
+
+---
+
+### 2.6 — Phase 2 Build Order (MVP Sequence)
+
+```
+Step 1:  Apply Migration 1 (profiles, courses, enrollments)
+Step 2:  Apply Migration 2 (assignments, submissions, grades)
+Step 3:  Apply Migration 3 (RLS policies)
+Step 4:  Apply Migration 4 (profile trigger)
+Step 5:  Install @supabase/supabase-js, create client
+Step 6:  Replace AuthContext with Supabase Auth
+Step 7:  Create supabaseApi.ts — auth functions first
+Step 8:  Seed demo data (2 lecturers, 4 students, 6 courses, 21 assignments)
+Step 9:  Replace read functions (getAllCourses, getAssignments, etc.)
+Step 10: Replace write functions (createCourse, submitCode, gradeSubmission)
+Step 11: Test full student flow: login → dashboard → course → lab → submit
+Step 12: Test full lecturer flow: login → dashboard → create → review → grade
+Step 13: Code execution Edge Function (if time permits)
+```
 
 ---
 
 ## Phase 3: Polish & Deployment (AFTER Phase 2)
 
-- [ ] Error handling across all API calls
-- [ ] Loading/error states for real async operations
+- [ ] Error handling across all API calls (loading/error states)
 - [ ] Mobile responsiveness audit
 - [ ] Accessibility audit (keyboard nav, screen readers)
 - [ ] Performance optimization (lazy loading, code splitting)
-- [ ] Deploy frontend (Vercel/Netlify)
-- [ ] Custom domain setup
+- [ ] Student enrollment by course code / invite link
 - [ ] User acceptance testing with HOD
+- [ ] Custom domain setup
 
 ---
 
-## Task Priority Order (Phase 1)
+## Tech Stack
 
-This is the exact build sequence:
-
-```
-1.  Create TypeScript types (src/types/index.ts)
-2.  Create mock data files (src/data/*.ts)
-3.  Create mock API service (src/services/mockApi.ts)
-4.  Create auth context with mock state (src/context/AuthContext.tsx)
-5.  Fix landing page off-point text (src/pages/Index.tsx)
-6.  Build Login page (src/pages/Login.tsx)
-7.  Build Signup page (src/pages/Signup.tsx)
-8.  Build ForgotPassword page (src/pages/ForgotPassword.tsx)
-9.  Build ProtectedRoute component (src/components/ProtectedRoute.tsx)
-10. Build shared Navbar component (src/components/Navbar.tsx)
-11. Install Monaco Editor (@monaco-editor/react)
-12. Rebuild Virtual Lab with Monaco Editor (src/pages/VirtualLab.tsx)
-13. Add Submit button + confirmation flow to Virtual Lab
-14. Build Course Detail page - student view (src/pages/CourseDetail.tsx)
-15. Update Student Dashboard to use mock API (src/pages/StudentDashboard.tsx)
-16. Build Submission View page (src/pages/SubmissionView.tsx)
-17. Build Lecturer Course Management page (src/pages/LecturerCourseManagement.tsx)
-18. Build Create Course modal/page (src/pages/CreateCourse.tsx)
-19. Build Create Assignment modal/page (src/pages/CreateAssignment.tsx)
-20. Build Code Review + Grading page (src/pages/CodeReview.tsx)
-21. Build Enrollment Manager component (src/components/EnrollmentManager.tsx)
-22. Update Lecturer Dashboard to use mock API (src/pages/LecturerDashboard.tsx)
-23. Build empty states, loading skeletons, breadcrumbs
-24. Update all routes in App.tsx
-25. Full UI walkthrough — test every flow end-to-end
-26. Commit, push, demo to HOD
-```
-
----
-
-## Files Summary (New + Modified)
-
-### New Files (~20)
-```
-src/types/index.ts
-src/data/mockUsers.ts
-src/data/mockCourses.ts
-src/data/mockEnrollments.ts
-src/data/mockAssignments.ts
-src/data/mockSubmissions.ts
-src/data/mockGrades.ts
-src/services/mockApi.ts
-src/context/AuthContext.tsx
-src/pages/Login.tsx
-src/pages/Signup.tsx
-src/pages/ForgotPassword.tsx
-src/pages/CourseDetail.tsx
-src/pages/SubmissionView.tsx
-src/pages/LecturerCourseManagement.tsx
-src/pages/CreateCourse.tsx
-src/pages/CreateAssignment.tsx
-src/pages/CodeReview.tsx
-src/components/ProtectedRoute.tsx
-src/components/Navbar.tsx
-src/components/Breadcrumbs.tsx
-src/components/LoadingSkeleton.tsx
-src/components/EmptyState.tsx
-src/components/EnrollmentManager.tsx
-```
-
-### Modified Files (~6)
-```
-src/App.tsx (routes, auth provider)
-src/pages/Index.tsx (fix off-point text)
-src/pages/StudentDashboard.tsx (mock data, layout)
-src/pages/LecturerDashboard.tsx (mock data, multi-course)
-src/pages/VirtualLab.tsx (Monaco, Submit button)
-package.json (@monaco-editor/react)
-```
-
----
-
-## Estimated Effort
-
-| Section | Effort |
+| Layer | Technology |
 |---|---|
-| 1.1 Fix landing page text | ~30 min |
-| 1.2 Auth pages (Login, Signup, Forgot, Guards) | ~3-4 hours |
-| 1.3 Student Dashboard overhaul | ~3-4 hours |
-| 1.4 Virtual Lab (Monaco + Submit) | ~3-4 hours |
-| 1.5 Lecturer Dashboard overhaul | ~5-6 hours |
-| 1.6 Shared components | ~2-3 hours |
-| 1.7 Mock data + types + service layer | ~2-3 hours |
-| 1.8 Route wiring + testing | ~1-2 hours |
-| **Phase 1 Total** | **~20-26 hours** |
+| Frontend | React 18 + TypeScript + Vite |
+| Styling | Tailwind CSS + shadcn/ui |
+| Editor | Monaco Editor (CDN) |
+| Backend | Supabase (Postgres + Auth + Edge Functions + RLS) |
+| Code Exec | Judge0 or Piston (via Edge Function proxy) |
+| Hosting | Vercel (auto-deploy from main) |
+| Version Control | Git → GitHub (`BISHOP-X/BABCOCK-VPL`) |
 
 ---
 
-*Last updated: February 13, 2026*
+## Supabase Project Details
+
+| Key | Value |
+|---|---|
+| Project Ref | `ckrzdghuipfkdifafmqz` |
+| API URL | `https://ckrzdghuipfkdifafmqz.supabase.co` |
+| Anon Key | In `.env` as `VITE_SUPABASE_PUBLISHABLE_KEY` |
+| Status | Fresh — no migrations, no tables |
+| MCP | Connected and tested via `.vscode/mcp.json` |
+
+---
+
+*Last updated: February 16, 2026*

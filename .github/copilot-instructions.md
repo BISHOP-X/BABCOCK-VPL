@@ -203,4 +203,83 @@ After completing any user request, mentally verify:
 - [ ] No regressions in related functionality
 - [ ] Changes committed with a descriptive message
 
+---
+
+## 📋 Project Context — BABCOCK VPL
+
+### What This Is
+A browser-based virtual programming lab for Babcock University. Students write, run, and submit code. Lecturers create courses/assignments, review code, and grade submissions. Monaco Editor powers the IDE. Supabase is the backend.
+
+### Current Phase
+**Phase 2: Supabase Backend Integration** — replacing localStorage mock layer with real Supabase tables. Phase 1 (all UI) is complete.
+
+### Key Files
+| File | Role |
+|---|---|
+| `src/types/index.ts` | All TypeScript types — maps 1:1 to Supabase tables |
+| `src/services/mockApi.ts` | 20+ async functions (being replaced by `supabaseApi.ts`) |
+| `src/data/*.ts` | Mock seed data (6 files) — reference for seeding Supabase |
+| `src/context/AuthContext.tsx` | Auth state — being replaced by Supabase Auth |
+| `src/context/ThemeContext.tsx` | Light/dark theme (no changes needed) |
+| `src/pages/VirtualLab.tsx` | Monaco Editor IDE — supports 8 languages |
+| `src/lib/supabase.ts` | Supabase client (to be created) |
+| `src/services/supabaseApi.ts` | Real API layer (to be created) |
+
+### Supabase Project
+| Key | Value |
+|---|---|
+| Project Ref | `ckrzdghuipfkdifafmqz` |
+| API URL | `https://ckrzdghuipfkdifafmqz.supabase.co` |
+| Env Vars | `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` (in `.env`) |
+| Status | Fresh — no migrations applied yet |
+
+### Database Tables (planned)
+`profiles`, `courses`, `enrollments`, `assignments`, `submissions`, `grades`
+Full schemas in `PLAN.md` → Phase 2.1
+
+### Type System
+- **UserRole:** `'student' | 'lecturer'`
+- **ProgrammingLanguage:** `'python' | 'java' | 'cpp' | 'c' | 'html' | 'css' | 'javascript' | 'php'`
+- **StudentLevel:** `'100' | '200' | '300' | '400' | '500' | 'phd'`
+- **AssignmentStatus:** `'not_started' | 'not-started' | 'in_progress' | 'submitted' | 'graded' | 'overdue'`
+- **EnrollmentStatus:** `'active' | 'archived'`
+
+### Routes
+```
+/                           → Landing page
+/login                      → Login (role toggle: student/lecturer)
+/signup                     → Signup
+/forgot-password            → Password reset
+/student                    → Student dashboard
+/student/courses/:courseId  → Course detail
+/student/submission/:id     → View submission
+/lab/:courseId/:assignmentId → Virtual Lab (Monaco IDE)
+/lecturer                   → Lecturer dashboard
+/lecturer/courses/:courseId → Course management
+/lecturer/create-course     → Create course
+/lecturer/create-assignment/:courseId → Create assignment
+/lecturer/review/:submissionId → Code review + grading
+```
+
+### Conventions
+- IDs are UUID strings (both mock and Supabase)
+- All API functions are async and return typed data
+- `tasks` field in assignments is JSONB (array of `{ id, description, hint? }`)
+- Mock data uses `DATA_VERSION` in localStorage for auto-reseeding
+- When adding a new programming language: update types, VirtualLab (langMap, starterCode, fileNameMap), StudentDashboard, LecturerDashboard, CourseDetail, CreateCourse
+
+### Deployment
+- **Live:** https://babcock-vpl.vercel.app/ (auto-deploys from `main`)
+- **Repo:** https://github.com/BISHOP-X/BABCOCK-VPL
+- **Branch:** `main`
+
+### MCP Servers Currently Configured
+Only these 4 are in `.vscode/mcp.json`:
+1. **Supabase** — connected, tested, working
+2. **Context7** — live docs
+3. **Sequential Thinking** — reasoning
+4. **Chrome DevTools** — browser inspection
+
+> Note: MongoDB and Vercel MCP servers are referenced in the tool catalog above but are NOT currently configured in this workspace. Use them only if/when they are added to `.vscode/mcp.json`.
+
 
