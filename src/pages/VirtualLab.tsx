@@ -7,7 +7,7 @@ import { useState, useEffect, useCallback } from "react";
 import Editor from "@monaco-editor/react";
 import { useAuth } from "@/context/useAuth";
 import { useTheme } from "@/context/ThemeContext";
-import { getAssignmentById, getCourseById, submitCode as mockSubmit, getSubmissionByStudentAndAssignment } from "@/services/mockApi";
+import { getAssignmentById, getCourseById, submitCode, getSubmissionByStudentAndAssignment } from "@/services/supabaseApi";
 import type { Assignment, CourseWithLecturer, Submission } from "@/types";
 import { toast } from "sonner";
 
@@ -55,21 +55,26 @@ const VirtualLab = () => {
   useEffect(() => {
     async function load() {
       if (!assignmentId || !courseId || !user) return;
-      const [asg, crs, sub] = await Promise.all([
-        getAssignmentById(assignmentId),
-        getCourseById(courseId),
-        getSubmissionByStudentAndAssignment(user.id, assignmentId),
-      ]);
-      setAssignment(asg);
-      setCourse(crs);
-      if (sub) {
-        setExistingSub(sub);
-        setCode(sub.code);
-        setSubmitted(true);
-        setOutput([{ text: '> Previously submitted code loaded', type: 'system' }]);
-      } else {
-        setCode(starterCode[crs?.language ?? 'python'] || starterCode.python);
-        setOutput([{ text: `> ${(crs?.language ?? 'python').toUpperCase()} environment ready`, type: 'system' }]);
+      try {
+        const [asg, crs, sub] = await Promise.all([
+          getAssignmentById(assignmentId),
+          getCourseById(courseId),
+          getSubmissionByStudentAndAssignment(user.id, assignmentId),
+        ]);
+        setAssignment(asg);
+        setCourse(crs);
+        if (sub) {
+          setExistingSub(sub);
+          setCode(sub.code);
+          setSubmitted(true);
+          setOutput([{ text: '> Previously submitted code loaded', type: 'system' }]);
+        } else {
+          setCode(starterCode[crs?.language ?? 'python'] || starterCode.python);
+          setOutput([{ text: `> ${(crs?.language ?? 'python').toUpperCase()} environment ready`, type: 'system' }]);
+        }
+      } catch (err) {
+        console.error('Failed to load lab:', err);
+        setOutput([{ text: '> Error loading assignment data. Please refresh.', type: 'stderr' }]);
       }
     }
     load();
@@ -107,10 +112,16 @@ const VirtualLab = () => {
     );
     if (!confirmed) return;
     setSubmitting(true);
-    await mockSubmit(assignmentId, user.id, code, lang, output.filter(o => o.type === 'stdout').map(o => o.text).join('\n'));
-    setSubmitting(false);
-    setSubmitted(true);
-    toast.success('Code submitted successfully!');
+    try {
+      await submitCode(assignmentId, user.id, code, lang, output.filter(o => o.type === 'stdout').map(o => o.text).join('\n'));
+      setSubmitted(true);
+      toast.success('Code submitted successfully!');
+    } catch (err) {
+      console.error('Failed to submit:', err);
+      toast.error('Submission failed. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   }, [submitting, submitted, user, assignmentId, code, lang, output]);
 
   const fileNameMap: Record<string, string> = {

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { useAuth } from '@/context/useAuth';
-import { getCourseById, getAssignmentsWithStatus } from '@/services/mockApi';
+import { getCourseById, getAssignmentsWithStatus } from '@/services/supabaseApi';
 import type { CourseWithLecturer, AssignmentWithStatus } from '@/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
@@ -33,17 +33,24 @@ const CourseDetail = () => {
   const [course, setCourse] = useState<CourseWithLecturer | null>(null);
   const [assignments, setAssignments] = useState<AssignmentWithStatus[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
       if (!courseId || !user) return;
-      const [crs, asgns] = await Promise.all([
-        getCourseById(courseId),
-        getAssignmentsWithStatus(courseId, user.id),
-      ]);
-      setCourse(crs);
-      setAssignments(asgns);
-      setLoading(false);
+      try {
+        const [crs, asgns] = await Promise.all([
+          getCourseById(courseId),
+          getAssignmentsWithStatus(courseId, user.id),
+        ]);
+        setCourse(crs);
+        setAssignments(asgns);
+      } catch (err) {
+        console.error('Failed to load course:', err);
+        setError('Failed to load course data. Please try again.');
+      } finally {
+        setLoading(false);
+      }
     }
     load();
   }, [courseId, user]);

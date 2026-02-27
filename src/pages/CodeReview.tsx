@@ -4,7 +4,7 @@ import Editor from '@monaco-editor/react';
 import Navbar from '@/components/Navbar';
 import { useAuth } from '@/context/useAuth';
 import { useTheme } from '@/context/ThemeContext';
-import { getSubmissionById, gradeSubmission } from '@/services/mockApi';
+import { getSubmissionById, gradeSubmission } from '@/services/supabaseApi';
 import type { SubmissionWithDetails, Grade } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,8 +12,12 @@ import { Label } from '@/components/ui/label';
 import {
   ArrowLeft, CheckCircle2, Clock, Star, FileText, Send,
 } from 'lucide-react';
+import { toast } from 'sonner';
 
-const langMap: Record<string, string> = { python: 'python', java: 'java', cpp: 'cpp' };
+const langMap: Record<string, string> = {
+  python: 'python', java: 'java', cpp: 'cpp', c: 'c',
+  html: 'html', css: 'css', javascript: 'javascript', php: 'php',
+};
 
 const CodeReview = () => {
   const { submissionId } = useParams();
@@ -23,6 +27,7 @@ const CodeReview = () => {
 
   const [data, setData] = useState<SubmissionWithDetails | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [score, setScore] = useState('');
   const [feedback, setFeedback] = useState('');
@@ -32,14 +37,20 @@ const CodeReview = () => {
   useEffect(() => {
     async function load() {
       if (!submissionId) return;
-      const sub = await getSubmissionById(submissionId);
-      setData(sub);
-      if (sub?.grade) {
-        setScore(sub.grade.score.toString());
-        setFeedback(sub.grade.feedback);
-        setSavedGrade(sub.grade);
+      try {
+        const sub = await getSubmissionById(submissionId);
+        setData(sub);
+        if (sub?.grade) {
+          setScore(sub.grade.score.toString());
+          setFeedback(sub.grade.feedback);
+          setSavedGrade(sub.grade);
+        }
+      } catch (err) {
+        console.error('Failed to load submission:', err);
+        setError('Failed to load submission. Please try again.');
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
     load();
   }, [submissionId]);
@@ -50,9 +61,15 @@ const CodeReview = () => {
     if (isNaN(numScore) || numScore < 0 || numScore > 100) return;
 
     setGrading(true);
-    const grade = await gradeSubmission(data.id, numScore, feedback.trim(), user.id);
-    setSavedGrade(grade);
-    setGrading(false);
+    try {
+      const grade = await gradeSubmission(data.id, numScore, feedback.trim(), user.id);
+      setSavedGrade(grade);
+    } catch (err) {
+      console.error('Failed to grade:', err);
+      toast.error('Failed to save grade. Please try again.');
+    } finally {
+      setGrading(false);
+    }
   };
 
   if (loading) {

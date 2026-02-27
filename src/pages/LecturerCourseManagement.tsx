@@ -8,7 +8,7 @@ import {
   getStudentsForCourse,
   getSubmissionsForAssignment,
   getCourseStats,
-} from '@/services/mockApi';
+} from '@/services/supabaseApi';
 import type { CourseWithLecturer, Assignment, User, SubmissionWithDetails, CourseStats } from '@/types';
 import { Button } from '@/components/ui/button';
 import {
@@ -32,21 +32,28 @@ const LecturerCourseManagement = () => {
   const [submissions, setSubmissions] = useState<SubmissionWithDetails[]>([]);
   const [selectedAssignment, setSelectedAssignment] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
       if (!courseId) return;
-      const [crs, asgns, studs, cStats] = await Promise.all([
-        getCourseById(courseId),
-        getAssignmentsForCourse(courseId),
-        getStudentsForCourse(courseId),
-        getCourseStats(courseId),
-      ]);
-      setCourse(crs);
-      setAssignments(asgns);
-      setStudents(studs);
-      setStats(cStats);
-      setLoading(false);
+      try {
+        const [crs, asgns, studs, cStats] = await Promise.all([
+          getCourseById(courseId),
+          getAssignmentsForCourse(courseId),
+          getStudentsForCourse(courseId),
+          getCourseStats(courseId),
+        ]);
+        setCourse(crs);
+        setAssignments(asgns);
+        setStudents(studs);
+        setStats(cStats);
+      } catch (err) {
+        console.error('Failed to load course management:', err);
+        setError('Failed to load course data. Please try again.');
+      } finally {
+        setLoading(false);
+      }
     }
     load();
   }, [courseId]);
@@ -55,8 +62,12 @@ const LecturerCourseManagement = () => {
   useEffect(() => {
     async function loadSubs() {
       if (!selectedAssignment) return;
-      const subs = await getSubmissionsForAssignment(selectedAssignment);
-      setSubmissions(subs);
+      try {
+        const subs = await getSubmissionsForAssignment(selectedAssignment);
+        setSubmissions(subs);
+      } catch (err) {
+        console.error('Failed to load submissions:', err);
+      }
     }
     loadSubs();
   }, [selectedAssignment]);

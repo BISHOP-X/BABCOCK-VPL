@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { useAuth } from '@/context/useAuth';
-import { getEnrollmentsForStudent, getAssignmentsWithStatus } from '@/services/mockApi';
+import { getEnrollmentsForStudent, getAssignmentsWithStatus } from '@/services/supabaseApi';
 import type { EnrollmentWithCourse, AssignmentWithStatus } from '@/types';
 import { Progress } from '@/components/ui/progress';
 import { Terminal, Clock, BookOpen, CheckCircle2, AlertCircle, ChevronRight } from 'lucide-react';
@@ -35,22 +35,29 @@ const StudentDashboard = () => {
   const [enrollments, setEnrollments] = useState<EnrollmentWithCourse[]>([]);
   const [courseAssignments, setCourseAssignments] = useState<Record<string, AssignmentWithStatus[]>>({});
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
       if (!user) return;
-      const enr = await getEnrollmentsForStudent(user.id);
-      setEnrollments(enr);
+      try {
+        const enr = await getEnrollmentsForStudent(user.id);
+        setEnrollments(enr);
 
-      // Load assignment statuses per course in parallel
-      const pairs = await Promise.all(
-        enr.map(async (e) => {
-          const asgns = await getAssignmentsWithStatus(e.course.id, user.id);
-          return [e.course.id, asgns] as const;
-        })
-      );
-      setCourseAssignments(Object.fromEntries(pairs));
-      setLoading(false);
+        // Load assignment statuses per course in parallel
+        const pairs = await Promise.all(
+          enr.map(async (e) => {
+            const asgns = await getAssignmentsWithStatus(e.course.id, user.id);
+            return [e.course.id, asgns] as const;
+          })
+        );
+        setCourseAssignments(Object.fromEntries(pairs));
+      } catch (err) {
+        console.error('Failed to load dashboard:', err);
+        setError('Failed to load your courses. Please try again.');
+      } finally {
+        setLoading(false);
+      }
     }
     load();
   }, [user]);

@@ -280,33 +280,118 @@ Replace each `mockApi` function with a Supabase query. Test after each:
 
 ---
 
-### 2.6 — Phase 2 Build Order (MVP Sequence)
+### 2.6 — Phase 2 Build Order (Revised after Architecture Audit)
 
+**Completed:**
 ```
-Step 1:  Apply Migration 1 (profiles, courses, enrollments)
-Step 2:  Apply Migration 2 (assignments, submissions, grades)
-Step 3:  Apply Migration 3 (RLS policies)
-Step 4:  Apply Migration 4 (profile trigger)
-Step 5:  Install @supabase/supabase-js, create client
-Step 6:  Replace AuthContext with Supabase Auth
-Step 7:  Create supabaseApi.ts — auth functions first
-Step 8:  Seed demo data (2 lecturers, 4 students, 6 courses, 21 assignments)
-Step 9:  Replace read functions (getAllCourses, getAssignments, etc.)
-Step 10: Replace write functions (createCourse, submitCode, gradeSubmission)
-Step 11: Test full student flow: login → dashboard → course → lab → submit
-Step 12: Test full lecturer flow: login → dashboard → create → review → grade
-Step 13: Code execution Edge Function (if time permits)
+✅ Step 1:  Apply Migration 1 (profiles, courses, enrollments)
+✅ Step 2:  Apply Migration 2 (assignments, submissions, grades)
+✅ Step 3:  Apply Migration 3 (RLS policies — 20 policies across 6 tables)
+✅ Step 4:  Apply Migration 4 (profile trigger — handle_new_user)
+✅ Step 5:  Install @supabase/supabase-js, create src/lib/supabase.ts client
+✅ Step 6:  Create supabaseApi.ts (451 lines, 20+ functions, same signatures as mockApi)
+✅ Step 7:  Seed demo data (8 users, 6 courses, 19 enrollments, 21 assignments, 6 submissions, 6 grades)
+✅ Step 8:  Disable email confirmation (mailer_autoconfirm = true via Management API)
 ```
+
+**Remaining — Execute in this exact order:**
+```
+Step 9:  Rewrite AuthContext.tsx for Supabase Auth
+         - Replace mock loginUser/signupUser with supabase.auth calls
+         - Add supabase.auth.onAuthStateChange() as single source of truth
+         - Remove manual localStorage user persistence (SDK handles sessions)
+         - logout must call supabase.auth.signOut()
+         - Forward Signup.tsx extra fields (matric_number, staff_id, level, department)
+         - Fetch profile from profiles table after auth resolves
+
+Step 10: Update Login.tsx
+         - Remove "Demo Mode" hint (real auth now)
+         - Remove role toggle selector (role stored in profile, not chosen at login)
+         - Add demo credentials hint for seed users instead (email + password Test1234!)
+
+Step 11: Update Signup.tsx
+         - Ensure full_name, role, department are forwarded as metadata
+         - Add matric_number field for students, staff_id for lecturers
+         - Add student level selector (100-500, phd) for students
+         - Accounts auto-confirm immediately (no email flow needed)
+
+Step 12: Swap all 9 mockApi imports → supabaseApi
+         Files to change (all are import-path-only swaps):
+         - src/pages/StudentDashboard.tsx
+         - src/pages/CourseDetail.tsx
+         - src/pages/VirtualLab.tsx
+         - src/pages/SubmissionView.tsx
+         - src/pages/LecturerDashboard.tsx
+         - src/pages/LecturerCourseManagement.tsx
+         - src/pages/CreateCourse.tsx
+         - src/pages/CreateAssignment.tsx
+         - src/pages/CodeReview.tsx
+
+Step 13: Add error handling to all data-loading pages
+         - Wrap every useEffect data load in try/catch
+         - Add error state + user-facing error UI to 7 pages that lack it
+         - Pages already covered: CreateCourse, CreateAssignment (have try/catch)
+
+Step 14: Fix langMap gaps in SubmissionView.tsx and CodeReview.tsx
+         - Add c, html, css, javascript, php to their local langMap objects
+         - Currently only map python, java, cpp — 5 languages missing
+
+Step 15: Test full student flow
+         - Login with seed student (alex.chen@babcock.edu.ng / Test1234!)
+         - Dashboard shows enrolled courses
+         - Course detail shows assignments with correct status
+         - VirtualLab opens, code submits successfully
+         - Submission view renders
+
+Step 16: Test full lecturer flow
+         - Login with seed lecturer (dr.adebayo@babcock.edu.ng / Test1234!)
+         - Dashboard shows created courses with stats
+         - Create new course works (RLS allows it)
+         - Create new assignment works
+         - Code review + grading works
+
+Step 17: Cleanup
+         - Delete src/services/mockApi.ts
+         - Delete src/data/*.ts mock data files (6 files)
+         - Remove all mock data imports
+         - Remove localStorage DATA_VERSION / persistence layer
+         - Remove unused mockApi exports (getAllCourses, getUserById — only used by supabaseApi now)
+
+Step 18: Code execution Edge Function (stretch)
+         - Deploy Supabase Edge Function as proxy to Judge0 or Piston API
+         - Replace handleRun mock in VirtualLab.tsx with real compilation
+         - Support: Python, Java, C, C++ (minimum), HTML/CSS/JS/PHP (stretch)
+```
+
+---
+
+### 2.7 — Architecture Audit Findings (for reference)
+
+**Schema ↔ Types alignment:** 100% — all 6 tables match TypeScript interfaces exactly.
+
+**API compatibility:** supabaseApi.ts has identical function signatures to mockApi.ts — designed as drop-in replacement.
+
+**FK constraint names verified:** `courses_lecturer_id_fkey`, `enrollments_student_id_fkey`, `submissions_student_id_fkey`, `submissions_assignment_id_fkey` — all match the `!fkey_name` JOIN syntax in supabaseApi.ts.
+
+**Critical dependency:** Auth swap (Step 9) MUST happen first. All RLS write policies use `auth.uid()` — without a real Supabase session, every INSERT/UPDATE/UPSERT will be denied.
+
+**Known gaps to address in Phase 3:**
+- No enrollment UI (students can't browse/join courses — seed data only for now)
+- React Query is set up (`QueryClientProvider` in App.tsx) but unused — all pages use manual useState+useEffect
+- VirtualLab "Run Code" produces fake output (Phase 3 Edge Function)
+- No forgot-password integration with Supabase `resetPasswordForEmail()`
 
 ---
 
 ## Phase 3: Polish & Deployment (AFTER Phase 2)
 
-- [ ] Error handling across all API calls (loading/error states)
+- [ ] Student enrollment UI (browse courses, enroll by code/link)
+- [ ] Forgot password → `supabase.auth.resetPasswordForEmail()`
+- [ ] Migrate pages to React Query (useQuery/useMutation) for caching + refetch
+- [ ] Code execution Edge Function (Judge0/Piston proxy)
 - [ ] Mobile responsiveness audit
 - [ ] Accessibility audit (keyboard nav, screen readers)
 - [ ] Performance optimization (lazy loading, code splitting)
-- [ ] Student enrollment by course code / invite link
 - [ ] User acceptance testing with HOD
 - [ ] Custom domain setup
 
@@ -320,7 +405,7 @@ Step 13: Code execution Edge Function (if time permits)
 | Styling | Tailwind CSS + shadcn/ui |
 | Editor | Monaco Editor (CDN) |
 | Backend | Supabase (Postgres + Auth + Edge Functions + RLS) |
-| Code Exec | Judge0 or Piston (via Edge Function proxy) |
+| Code Exec | Judge0 or Piston (via Edge Function proxy) — Phase 3 |
 | Hosting | Vercel (auto-deploy from main) |
 | Version Control | Git → GitHub (`BISHOP-X/BABCOCK-VPL`) |
 
@@ -333,7 +418,11 @@ Step 13: Code execution Edge Function (if time permits)
 | Project Ref | `ckrzdghuipfkdifafmqz` |
 | API URL | `https://ckrzdghuipfkdifafmqz.supabase.co` |
 | Anon Key | In `.env` as `VITE_SUPABASE_PUBLISHABLE_KEY` |
-| Status | Fresh — no migrations, no tables |
+| Email Confirmation | **Disabled** (`mailer_autoconfirm = true`) |
+| Tables | 6 — profiles, courses, enrollments, assignments, submissions, grades |
+| RLS Policies | 20 — all CRUD paths covered |
+| Seed Data | 8 users, 6 courses, 19 enrollments, 21 assignments, 6 submissions, 6 grades |
+| All passwords | `Test1234!` |
 | MCP | Connected and tested via `.vscode/mcp.json` |
 
 ---

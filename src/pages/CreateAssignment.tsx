@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
-import { createAssignment } from '@/services/mockApi';
+import { createAssignment } from '@/services/supabaseApi';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

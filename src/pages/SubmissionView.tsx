@@ -3,25 +3,35 @@ import { useParams, Link } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import Navbar from '@/components/Navbar';
 import { useTheme } from '@/context/ThemeContext';
-import { getSubmissionById } from '@/services/mockApi';
+import { getSubmissionById } from '@/services/supabaseApi';
 import type { SubmissionWithDetails } from '@/types';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Calendar, CheckCircle2, Clock, Star, FileText } from 'lucide-react';
 
-const langMap: Record<string, string> = { python: 'python', java: 'java', cpp: 'cpp' };
+const langMap: Record<string, string> = {
+  python: 'python', java: 'java', cpp: 'cpp', c: 'c',
+  html: 'html', css: 'css', javascript: 'javascript', php: 'php',
+};
 
 const SubmissionView = () => {
   const { submissionId } = useParams();
   const { theme } = useTheme();
   const [data, setData] = useState<SubmissionWithDetails | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
       if (!submissionId) return;
-      const sub = await getSubmissionById(submissionId);
-      setData(sub);
-      setLoading(false);
+      try {
+        const sub = await getSubmissionById(submissionId);
+        setData(sub);
+      } catch (err) {
+        console.error('Failed to load submission:', err);
+        setError('Failed to load submission. Please try again.');
+      } finally {
+        setLoading(false);
+      }
     }
     load();
   }, [submissionId]);

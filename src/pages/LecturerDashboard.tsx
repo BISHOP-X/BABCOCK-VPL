@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { useAuth } from '@/context/useAuth';
-import { getCoursesByLecturer, getCourseStats } from '@/services/mockApi';
+import { getCoursesByLecturer, getCourseStats } from '@/services/supabaseApi';
 import type { CourseWithLecturer, CourseStats } from '@/types';
 import { Button } from '@/components/ui/button';
 import { BookOpen, Users, BarChart3, Plus, ChevronRight, Activity } from 'lucide-react';
@@ -34,21 +34,28 @@ const LecturerDashboard = () => {
   const [courses, setCourses] = useState<CourseWithLecturer[]>([]);
   const [statsMap, setStatsMap] = useState<Record<string, CourseStats>>({});
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
       if (!user) return;
-      const crs = await getCoursesByLecturer(user.id);
-      setCourses(crs);
+      try {
+        const crs = await getCoursesByLecturer(user.id);
+        setCourses(crs);
 
-      const pairs = await Promise.all(
-        crs.map(async (c) => {
-          const stats = await getCourseStats(c.id);
-          return [c.id, stats] as const;
-        }),
-      );
-      setStatsMap(Object.fromEntries(pairs));
-      setLoading(false);
+        const pairs = await Promise.all(
+          crs.map(async (c) => {
+            const stats = await getCourseStats(c.id);
+            return [c.id, stats] as const;
+          }),
+        );
+        setStatsMap(Object.fromEntries(pairs));
+      } catch (err) {
+        console.error('Failed to load dashboard:', err);
+        setError('Failed to load your courses. Please try again.');
+      } finally {
+        setLoading(false);
+      }
     }
     load();
   }, [user]);

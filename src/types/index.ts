@@ -136,5 +136,6 @@ export interface SignupData {
   role: UserRole;
   matric_number?: string;
   staff_id?: string;
+  level?: StudentLevel;
   department?: string;
 }
