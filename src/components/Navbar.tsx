@@ -2,6 +2,14 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/useAuth';
 import { useTheme } from '@/context/ThemeContext';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { LogOut, Menu, X, Sun, Moon } from 'lucide-react';
 import { useState } from 'react';
 
@@ -43,7 +51,7 @@ const Navbar = () => {
             <div className="w-7 h-7 rounded bg-primary/20 border border-primary/50 flex items-center justify-center">
               <span className="text-primary font-bold font-mono text-xs">{`>`}</span>
             </div>
-            <span className="font-bold text-sm tracking-tight hidden sm:inline">BABCOCK VPL</span>
+            <span className="font-bold text-sm tracking-tight hidden sm:inline">BUCODeL VPL</span>
           </Link>
 
           {/* Desktop links */}
@@ -76,21 +84,38 @@ const Navbar = () => {
             {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </Button>
 
-          <div className="text-right hidden sm:block">
-            <p className="text-xs font-medium text-foreground leading-none">{user?.full_name}</p>
-            <p className="text-[10px] text-muted-foreground mt-0.5 capitalize">{user?.role}</p>
-          </div>
-          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-primary/40 to-blue-600/40 border border-border flex items-center justify-center text-[11px] font-bold text-foreground">
-            {user?.full_name?.charAt(0) ?? '?'}
-          </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleLogout}
-            className="h-8 w-8 text-muted-foreground hover:text-red-400 hover:bg-red-500/10 hidden sm:flex"
-          >
-            <LogOut className="h-4 w-4" />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex items-center gap-2 outline-none">
+                <div className="text-right hidden sm:block">
+                  <p className="text-xs font-medium text-foreground leading-none">{user?.full_name}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5 capitalize">{user?.role}</p>
+                </div>
+                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-primary/40 to-blue-600/40 border border-border flex items-center justify-center text-[11px] font-bold text-foreground hover:opacity-75 transition-opacity">
+                  {user?.full_name?.charAt(0) ?? '?'}
+                </div>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-52">
+              <DropdownMenuLabel className="pb-1">
+                <p className="font-semibold text-sm">{user?.full_name}</p>
+                <p className="text-xs text-muted-foreground capitalize font-normal">{user?.role}</p>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={toggleTheme} className="gap-2 cursor-pointer">
+                {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={handleLogout}
+                className="gap-2 cursor-pointer text-red-500 focus:text-red-500 focus:bg-red-500/10"
+              >
+                <LogOut className="h-4 w-4" />
+                Sign Out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           {/* Mobile menu toggle */}
           <Button

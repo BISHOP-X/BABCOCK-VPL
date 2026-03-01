@@ -29,7 +29,7 @@ const ForgotPassword = () => {
             <div className="w-9 h-9 rounded-lg bg-primary/20 border border-primary/50 flex items-center justify-center">
               <span className="text-primary font-bold font-mono">{`>`}</span>
             </div>
-            <span className="font-bold text-xl tracking-tight text-foreground">BABCOCK VPL</span>
+            <span className="font-bold text-xl tracking-tight text-foreground">BUCODeL VPL</span>
           </Link>
           <p className="text-sm text-muted-foreground">Reset your password</p>
         </div>
