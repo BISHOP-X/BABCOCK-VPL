@@ -7,6 +7,17 @@ import { useAuth } from '@/context/useAuth';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 
+const DEMO_ACCOUNTS = {
+  student: {
+    email: 'alex.chen@babcock.edu.ng',
+    password: 'Test1234!',
+  },
+  lecturer: {
+    email: 'anderson@babcock.edu.ng',
+    password: 'Test1234!',
+  },
+};
+
 const Login = () => {
   const navigate = useNavigate();
   const { login, logout, isLoading, isAuthenticated, user } = useAuth();
@@ -14,11 +25,27 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const fillDemoAccount = (type: 'student' | 'lecturer') => {
+    setEmail(DEMO_ACCOUNTS[type].email);
+    setPassword(DEMO_ACCOUNTS[type].password);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const normalizedEmail = email.trim().toLowerCase();
+    const allowedEmails = [DEMO_ACCOUNTS.student.email, DEMO_ACCOUNTS.lecturer.email];
+    const isAllowedDemoLogin =
+      allowedEmails.includes(normalizedEmail) && password === DEMO_ACCOUNTS.student.password;
+
+    if (!isAllowedDemoLogin) {
+      toast.error('Demo mode: you must use the provided demo credentials.');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      const role = await login({ email, password });
+      const role = await login({ email: normalizedEmail, password });
       toast.success('Welcome back!');
       navigate(role === 'lecturer' ? '/lecturer' : '/student', { replace: true });
     } catch (error) {
@@ -85,6 +112,29 @@ const Login = () => {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-5 sm:p-7 space-y-4 border border-border">
+          <div className="rounded-lg border border-amber-400/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-200 dark:text-amber-300">
+            Demo mode is active. You must use the demo credentials below to sign in.
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="h-9 text-xs"
+              onClick={() => fillDemoAccount('student')}
+            >
+              Use Student Demo
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="h-9 text-xs"
+              onClick={() => fillDemoAccount('lecturer')}
+            >
+              Use Lecturer Demo
+            </Button>
+          </div>
+
           <div className="space-y-1.5">
             <Label htmlFor="email" className="text-xs">Email</Label>
             <Input
@@ -134,9 +184,9 @@ const Login = () => {
         </form>
 
         <p className="text-center text-xs text-muted-foreground">
-          Don't have an account?{' '}
+          Account creation is temporarily disabled in demo mode.{' '}
           <Link to="/signup" className="text-primary hover:underline font-medium">
-            Create account
+            Learn more
           </Link>
         </p>
       </div>

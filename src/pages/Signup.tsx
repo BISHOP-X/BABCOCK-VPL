@@ -19,7 +19,7 @@ const STUDENT_LEVELS: { value: StudentLevel; label: string }[] = [
 
 const Signup = () => {
   const navigate = useNavigate();
-  const { signup, logout, isLoading, isAuthenticated, user } = useAuth();
+  const { logout, isLoading, isAuthenticated, user } = useAuth();
   
   const [firstName, setFirstName] = useState('');
   const [middleName, setMiddleName] = useState('');
@@ -35,37 +35,7 @@ const Signup = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      toast.error('Passwords do not match');
-      return;
-    }
-    
-    setIsSubmitting(true);
-    try {
-      const fullName = [firstName, middleName, lastName]
-        .map((name) => name.trim())
-        .filter(Boolean)
-        .join(' ');
-
-      const roleFromSignup = await signup({
-        email,
-        password,
-        first_name: firstName,
-        middle_name: middleName,
-        last_name: lastName,
-        full_name: fullName,
-        role,
-        department: 'Computer Science',
-        ...(role === 'student' ? { matric_number: matricNumber, level } : { staff_id: staffId }),
-      });
-      toast.success('Account created successfully!');
-      navigate(roleFromSignup === 'lecturer' ? '/lecturer' : '/student', { replace: true });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Signup failed. Try again.';
-      toast.error(message);
-    } finally {
-      setIsSubmitting(false);
-    }
+    toast.error('Signup is temporarily disabled for demo. Use demo credentials on the login page.');
   };
 
   if (isLoading) {
@@ -119,6 +89,18 @@ const Signup = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-5 sm:p-7 space-y-5 border border-border">
+          <div className="rounded-lg border border-amber-400/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-200 dark:text-amber-300 leading-relaxed">
+            Signup is temporarily disabled for this demo.
+            <br />
+            Use these demo credentials on the login page:
+            <br />
+            Student: alex.chen@babcock.edu.ng
+            <br />
+            Lecturer: anderson@babcock.edu.ng
+            <br />
+            Password: Test1234!
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-1.5">
               <Label htmlFor="firstName" className="text-xs">First Name</Label>
@@ -188,14 +170,14 @@ const Signup = () => {
             </div>
           </div>
 
-          <Button type="submit" disabled={isSubmitting} className="w-full h-11 bg-primary text-primary-foreground font-semibold hover:bg-primary/90 mt-2 shadow-lg shadow-primary/20">
-            {isSubmitting ? 'Creating account...' : 'Create Account'}
+          <Button type="submit" disabled className="w-full h-11 bg-primary text-primary-foreground font-semibold hover:bg-primary/90 mt-2 shadow-lg shadow-primary/20 disabled:opacity-60">
+            Create Account (Disabled for Demo)
           </Button>
         </form>
 
         <p className="text-center text-xs text-muted-foreground">
-          Already have an account?{' '}
-          <Link to="/login" className="text-primary hover:underline font-medium">Sign in</Link>
+          Return to{' '}
+          <Link to="/login" className="text-primary hover:underline font-medium">Sign in with demo credentials</Link>
         </p>
       </div>
     </div>
