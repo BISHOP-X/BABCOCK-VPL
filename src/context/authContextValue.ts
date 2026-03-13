@@ -1,9 +1,9 @@
 import { createContext } from 'react';
-import type { AuthState, LoginCredentials, SignupData } from '@/types';
+import type { AuthState, LoginCredentials, SignupData, UserRole } from '@/types';
 
 export interface AuthContextValue extends AuthState {
-  login: (creds: LoginCredentials) => Promise<void>;
-  signup: (data: SignupData) => Promise<void>;
+  login: (creds: LoginCredentials) => Promise<UserRole>;
+  signup: (data: SignupData) => Promise<UserRole>;
   logout: () => Promise<void> | void;
 }
 

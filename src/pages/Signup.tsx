@@ -47,7 +47,7 @@ const Signup = () => {
         .filter(Boolean)
         .join(' ');
 
-      await signup({
+      const roleFromSignup = await signup({
         email,
         password,
         first_name: firstName,
@@ -59,9 +59,10 @@ const Signup = () => {
         ...(role === 'student' ? { matric_number: matricNumber, level } : { staff_id: staffId }),
       });
       toast.success('Account created successfully!');
-      navigate(role === 'lecturer' ? '/lecturer' : '/student');
-    } catch {
-      toast.error('Signup failed. Try again.');
+      navigate(roleFromSignup === 'lecturer' ? '/lecturer' : '/student', { replace: true });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Signup failed. Try again.';
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
