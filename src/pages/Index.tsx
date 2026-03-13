@@ -20,7 +20,7 @@ const LandingPage = () => {
             </div>
             <div className="min-w-0">
               <span className="font-bold text-base sm:text-lg tracking-tight leading-none block">BUCODeL VPL</span>
-              <span className="text-[9px] sm:text-[10px] text-muted-foreground leading-none hidden xs:block truncate">Babcock University Centre of Open &amp; Distance eLearning</span>
+              <span className="text-[9px] sm:text-[10px] text-muted-foreground leading-none hidden xs:block truncate">Babcock University Center for Open and Distance eLearning</span>
             </div>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
@@ -56,9 +56,9 @@ const LandingPage = () => {
             <div>
               <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-primary/70 mb-3">Babcock University</p>
               <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight px-2">
-                Centre of Open and Distance eLearning
+                Babcock University Center for Open and Distance eLearning
                 <br className="hidden sm:block" />
-                <span className="text-gradient-primary"> Virtual Laboratory</span>
+                <span className="text-gradient-primary">Virtual Laboratory</span>
               </h1>
             </div>
             <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed px-2">
@@ -125,7 +125,7 @@ const LandingPage = () => {
       <footer className="border-t border-border bg-card/30 py-6 sm:py-8">
         <div className="container px-4 sm:px-6 text-center">
           <p className="text-xs sm:text-sm text-muted-foreground">
-            &#169; {new Date().getFullYear()} Babcock University Centre of Open and Distance eLearning (BUCODeL). All rights reserved.
+            &#169; {new Date().getFullYear()} Babcock University Center for Open and Distance eLearning (BUCODeL). All rights reserved.
           </p>
         </div>
       </footer>

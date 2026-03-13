@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { LogOut, Menu, X, Sun, Moon } from 'lucide-react';
+import { LogOut, Menu, X, Sun, Moon, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 
 const Navbar = () => {
@@ -20,8 +20,9 @@ const Navbar = () => {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
+    setMobileOpen(false);
     navigate('/login', { replace: true });
   };
 
@@ -86,14 +87,18 @@ const Navbar = () => {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-2 outline-none">
+              <button
+                className="flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-muted transition-colors outline-none"
+                aria-label="Account menu"
+              >
                 <div className="text-right hidden sm:block">
-                  <p className="text-xs font-medium text-foreground leading-none">{user?.full_name}</p>
+                  <p className="text-xs font-medium text-foreground leading-none">Account</p>
                   <p className="text-[10px] text-muted-foreground mt-0.5 capitalize">{user?.role}</p>
                 </div>
                 <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-primary/40 to-blue-600/40 border border-border flex items-center justify-center text-[11px] font-bold text-foreground hover:opacity-75 transition-opacity">
                   {user?.full_name?.charAt(0) ?? '?'}
                 </div>
+                <ChevronDown className="hidden sm:block h-3.5 w-3.5 text-muted-foreground" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-52">
