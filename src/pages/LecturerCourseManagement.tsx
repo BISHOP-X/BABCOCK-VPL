@@ -13,8 +13,9 @@ import type { CourseWithLecturer, Assignment, User, SubmissionWithDetails, Cours
 import { Button } from '@/components/ui/button';
 import {
   ArrowLeft, BookOpen, Users, FileText, BarChart3,
-  Plus, ChevronRight, Clock, CheckCircle2, AlertCircle,
+  Plus, ChevronRight, Clock, CheckCircle2, AlertCircle, Link2,
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 type Tab = 'assignments' | 'students' | 'submissions';
 
@@ -108,6 +109,18 @@ const LecturerCourseManagement = () => {
     { key: 'submissions', label: 'Submissions', icon: BookOpen },
   ];
 
+  const copyAssignmentLink = async (assignmentId: string) => {
+    if (!courseId) return;
+
+    const assignmentLink = `${window.location.origin}/lab/${courseId}/${assignmentId}`;
+    try {
+      await navigator.clipboard.writeText(assignmentLink);
+      toast.success('Assignment link copied. Share it with enrolled students.');
+    } catch {
+      toast.error('Could not copy link. Please copy from browser address bar.');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
@@ -191,6 +204,13 @@ const LecturerCourseManagement = () => {
               </Link>
             </div>
 
+            <div className="mb-4 rounded-xl border border-primary/20 bg-primary/5 p-3 sm:p-4">
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Assignment sharing: send students the assignment link using the <span className="text-foreground font-medium">Copy Link</span> button.
+                Only students enrolled in this course can access and submit the assignment.
+              </p>
+            </div>
+
             <div className="space-y-3">
               {assignments.map((asg) => {
                 const dueDate = new Date(asg.due_date);
@@ -210,6 +230,17 @@ const LecturerCourseManagement = () => {
                         {asg.tasks.length} tasks &middot; Due {dueDate.toLocaleDateString('en-NG', { month: 'short', day: 'numeric' })}
                       </p>
                     </div>
+
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-8 px-2 text-xs text-muted-foreground hover:text-primary"
+                      onClick={() => copyAssignmentLink(asg.id)}
+                    >
+                      <Link2 className="w-3.5 h-3.5 mr-1" />
+                      Copy Link
+                    </Button>
+
                     {isPast ? (
                       <span className="text-[10px] text-red-500 dark:text-red-400 flex items-center gap-1"><AlertCircle className="w-3 h-3" /> Past Due</span>
                     ) : (

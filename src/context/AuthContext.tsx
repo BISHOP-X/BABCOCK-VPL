@@ -1,9 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import type { User, AuthState, LoginCredentials, SignupData } from '@/types';
+import type { User, LoginCredentials, SignupData } from '@/types';
 import { supabase } from '@/lib/supabase';
 import { AuthContext } from './authContextValue';
 
-// ---------- Helper: fetch profile from Supabase ----------
 async function fetchProfile(userId: string): Promise<User | null> {
   const { data, error } = await supabase
     .from('profiles')
@@ -14,70 +13,74 @@ async function fetchProfile(userId: string): Promise<User | null> {
   return data as User;
 }
 
-// ---------- Provider ----------
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [state, setState] = useState<AuthState>({
-    user: null,
-    isAuthenticated: false,
-    isLoading: true,
-  });
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Listen to Supabase auth state changes (single source of truth)
   useEffect(() => {
-    // 1. Check existing session on mount
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (session?.user) {
-        const profile = await fetchProfile(session.user.id);
-        setState({
-          user: profile,
-          isAuthenticated: !!profile,
-          isLoading: false,
-        });
-      } else {
-        setState({ user: null, isAuthenticated: false, isLoading: false });
-      }
-    });
+    let ignore = false;
 
-    // 2. Subscribe to future auth changes (login, logout, token refresh)
+    // onAuthStateChange fires INITIAL_SESSION immediately on subscribe.
+    // This is the ONLY way we detect the session. No getSession() needed.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === 'SIGNED_IN' && session?.user) {
+      async (_event, session) => {
+        if (ignore) return;
+
+        if (session?.user) {
           const profile = await fetchProfile(session.user.id);
-          setState({
-            user: profile,
-            isAuthenticated: !!profile,
-            isLoading: false,
-          });
-        } else if (event === 'SIGNED_OUT') {
-          setState({ user: null, isAuthenticated: false, isLoading: false });
+          if (!ignore) {
+            setUser(profile);
+            setIsLoading(false);
+          }
+        } else {
+          setUser(null);
+          setIsLoading(false);
         }
-      },
+      }
     );
 
-    return () => subscription.unsubscribe();
+    // Safety net: if onAuthStateChange never fires (broken env, etc),
+    // unblock the UI after 3 seconds so login/signup forms are usable.
+    const timeout = setTimeout(() => {
+      if (!ignore) setIsLoading(false);
+    }, 3000);
+
+    return () => {
+      ignore = true;
+      clearTimeout(timeout);
+      subscription.unsubscribe();
+    };
   }, []);
 
   const login = useCallback(async (creds: LoginCredentials) => {
-    setState((s) => ({ ...s, isLoading: true }));
     const { error } = await supabase.auth.signInWithPassword({
       email: creds.email,
       password: creds.password,
     });
-    if (error) {
-      setState((s) => ({ ...s, isLoading: false }));
-      throw new Error(error.message);
-    }
-    // onAuthStateChange will handle setting the user state
+    if (error) throw new Error(error.message);
+    // onAuthStateChange SIGNED_IN will set user
   }, []);
 
   const signup = useCallback(async (data: SignupData) => {
-    setState((s) => ({ ...s, isLoading: true }));
+    const composedFullName = [data.first_name, data.middle_name, data.last_name]
+      .filter((part) => !!part && part.trim().length > 0)
+      .join(' ')
+      .trim();
+    const fullName = data.full_name?.trim() || composedFullName;
+
+    if (!fullName) {
+      throw new Error('Full name is required');
+    }
+
     const { error } = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
       options: {
         data: {
-          full_name: data.full_name,
+          full_name: fullName,
+          first_name: data.first_name,
+          middle_name: data.middle_name,
+          last_name: data.last_name,
           role: data.role,
           matric_number: data.matric_number,
           staff_id: data.staff_id,
@@ -86,22 +89,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         },
       },
     });
-    if (error) {
-      setState((s) => ({ ...s, isLoading: false }));
-      throw new Error(error.message);
-    }
-    // onAuthStateChange will handle setting the user state
-    // Small wait for the DB trigger to create the profile row
-    await new Promise((r) => setTimeout(r, 600));
+    if (error) throw new Error(error.message);
+    // Wait for the DB trigger to create the profile row
+    await new Promise((r) => setTimeout(r, 800));
+    // onAuthStateChange SIGNED_IN will set user
   }, []);
 
   const logout = useCallback(async () => {
     await supabase.auth.signOut();
-    setState({ user: null, isAuthenticated: false, isLoading: false });
+    // onAuthStateChange SIGNED_OUT will clear user
   }, []);
 
   return (
-    <AuthContext.Provider value={{ ...state, login, signup, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated: !!user,
+        isLoading,
+        login,
+        signup,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

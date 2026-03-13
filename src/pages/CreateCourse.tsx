@@ -10,6 +10,19 @@ import { ArrowLeft, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import type { ProgrammingLanguage } from '@/types';
 
+const courseCatalog: { code: string; title: string; language: ProgrammingLanguage }[] = [
+  { code: 'CSC101', title: 'Introduction to Programming', language: 'python' },
+  { code: 'CSC201', title: 'Object-Oriented Programming', language: 'java' },
+  { code: 'CSC202', title: 'Data Structures and Algorithms', language: 'cpp' },
+  { code: 'CSC301', title: 'Web Development Fundamentals', language: 'html' },
+  { code: 'CSC302', title: 'Database Systems', language: 'php' },
+  { code: 'CSC303', title: 'Operating Systems', language: 'c' },
+  { code: 'CSC401', title: 'Advanced Software Engineering', language: 'java' },
+  { code: 'CSC402', title: 'Compiler Design', language: 'cpp' },
+  { code: 'CSC403', title: 'Machine Learning Foundations', language: 'python' },
+  { code: 'CSC404', title: 'Secure Web Programming', language: 'javascript' },
+];
+
 const languages: { value: ProgrammingLanguage; label: string }[] = [
   { value: 'python', label: 'Python' },
   { value: 'java', label: 'Java' },
@@ -19,20 +32,50 @@ const languages: { value: ProgrammingLanguage; label: string }[] = [
   { value: 'php', label: 'PHP (LAMP/WAMP)' },
 ];
 
+const semesterOptions = [
+  '2025/2026 - First Semester',
+  '2025/2026 - Second Semester',
+  '2026/2027 - First Semester',
+  '2026/2027 - Second Semester',
+];
+
 const CreateCourse = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const defaultCourse = courseCatalog[0];
 
   const [form, setForm] = useState({
-    title: '',
-    code: '',
-    language: 'python' as ProgrammingLanguage,
+    title: defaultCourse.title,
+    code: defaultCourse.code,
+    language: defaultCourse.language,
     description: '',
-    semester: '2025/2026 - First Semester',
+    semester: semesterOptions[0],
   });
   const [submitting, setSubmitting] = useState(false);
 
   const set = (key: string, value: string) => setForm((f) => ({ ...f, [key]: value }));
+
+  const handleCodeChange = (code: string) => {
+    const selected = courseCatalog.find((course) => course.code === code);
+    if (!selected) return;
+    setForm((f) => ({
+      ...f,
+      code: selected.code,
+      title: selected.title,
+      language: selected.language,
+    }));
+  };
+
+  const handleTitleChange = (title: string) => {
+    const selected = courseCatalog.find((course) => course.title === title);
+    if (!selected) return;
+    setForm((f) => ({
+      ...f,
+      code: selected.code,
+      title: selected.title,
+      language: selected.language,
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,7 +99,7 @@ const CreateCourse = () => {
     }
   };
 
-  const valid = form.title.trim() && form.code.trim() && form.description.trim();
+  const valid = form.title.trim() && form.code.trim() && form.description.trim() && form.semester.trim();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -79,12 +122,17 @@ const CreateCourse = () => {
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <Label className="text-xs text-muted-foreground">Course Code</Label>
-              <Input
+              <select
                 value={form.code}
-                onChange={(e) => set('code', e.target.value)}
-                placeholder="e.g. CS101"
-                className="mt-1.5 bg-muted/50 border-border"
-              />
+                onChange={(e) => handleCodeChange(e.target.value)}
+                className="mt-1.5 w-full h-10 rounded-md bg-muted/50 border border-border text-sm text-foreground px-3"
+              >
+                {courseCatalog.map((course) => (
+                  <option key={course.code} value={course.code} className="bg-background text-foreground">
+                    {course.code}
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
               <Label className="text-xs text-muted-foreground">Language</Label>
@@ -102,12 +150,17 @@ const CreateCourse = () => {
 
           <div>
             <Label className="text-xs text-muted-foreground">Course Title</Label>
-            <Input
+            <select
               value={form.title}
-              onChange={(e) => set('title', e.target.value)}
-              placeholder="e.g. Introduction to Python Programming"
-              className="mt-1.5 bg-muted/50 border-border"
-            />
+              onChange={(e) => handleTitleChange(e.target.value)}
+              className="mt-1.5 w-full h-10 rounded-md bg-muted/50 border border-border text-sm text-foreground px-3"
+            >
+              {courseCatalog.map((course) => (
+                <option key={course.title} value={course.title} className="bg-background text-foreground">
+                  {course.title}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
@@ -123,11 +176,17 @@ const CreateCourse = () => {
 
           <div>
             <Label className="text-xs text-muted-foreground">Semester</Label>
-            <Input
+            <select
               value={form.semester}
               onChange={(e) => set('semester', e.target.value)}
-              className="mt-1.5 bg-muted/50 border-border"
-            />
+              className="mt-1.5 w-full h-10 rounded-md bg-muted/50 border border-border text-sm text-foreground px-3"
+            >
+              {semesterOptions.map((semester) => (
+                <option key={semester} value={semester} className="bg-background text-foreground">
+                  {semester}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">

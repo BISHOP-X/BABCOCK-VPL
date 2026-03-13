@@ -132,7 +132,10 @@ export interface LoginCredentials {
 export interface SignupData {
   email: string;
   password: string;
-  full_name: string;
+  full_name?: string;
+  first_name?: string;
+  middle_name?: string;
+  last_name?: string;
   role: UserRole;
   matric_number?: string;
   staff_id?: string;
